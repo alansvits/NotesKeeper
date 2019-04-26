@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 protocol CreateNoteViewControllerDelegate: class {
     func createNoteViewController(_ controller: CreateNoteViewController, didFinishAdding note: Note)
@@ -19,7 +20,9 @@ class CreateNoteViewController: UIViewController {
     weak var delegate: CreateNoteViewControllerDelegate?
     var saveButton: UIBarButtonItem!
     var editMode = true
-    var noteText = ""
+    var note: Note?
+    var managedContext: NSManagedObjectContext!
+//    var noteText = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,15 +31,25 @@ class CreateNoteViewController: UIViewController {
         showSaveButton(mode: editMode)
 
         textView.contentInset = UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
-        textView.text = noteText
+        textView.text = note?.text ?? ""
         setupTextView(mode: editMode)
         
     }
     
     @objc func saveNoteButtonPressed(_ sender: Any) {
         let text = textView.text!
-        let note = Note(text: text, date: Date())
-        delegate?.createNoteViewController(self, didFinishAdding: note)
+        let entity = NSEntityDescription.entity(forEntityName: "Note", in: managedContext)!
+        
+        let note = NSManagedObject(entity: entity, insertInto: managedContext)
+        note.setValue(text, forKey: "text")
+        note.setValue(Date(), forKey: "date")
+        do {
+            try managedContext.save()
+        } catch let error as NSError {
+            print("Could not save. \(error), \(error.userInfo)")
+        }
+        self.note = nil
+        delegate?.createNoteViewController(self, didFinishAdding: note as! Note)
     }
     
     private func showSaveButton(mode: Bool) {

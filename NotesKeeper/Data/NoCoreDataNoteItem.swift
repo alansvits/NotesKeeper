@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Note {
+class NoCoreDataNoteItem {
     var date: Date
     var text = ""
     
