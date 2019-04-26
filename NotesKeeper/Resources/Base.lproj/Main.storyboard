@@ -69,7 +69,7 @@
                                     <outlet property="dateLabel" destination="3u6-cj-M6y" id="gos-fg-1ZX"/>
                                     <outlet property="noteLabel" destination="cTM-tv-fI9" id="qnF-5N-uJe"/>
                                     <outlet property="timeLabel" destination="KSL-NA-ANH" id="x7j-ZJ-bnI"/>
-                                    <segue destination="PvG-Bk-oKD" kind="show" identifier="NoteDetalilsSegue" id="lm1-a3-qee"/>
+                                    <segue destination="WGD-Ov-HJe" kind="show" identifier="DetailNoteSegue" id="Mky-I7-wod"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -117,11 +117,7 @@
                         <viewLayoutGuide key="safeArea" id="wMC-Kw-foH"/>
                     </view>
                     <navigationItem key="navigationItem" id="uZ4-Nc-BeW">
-                        <barButtonItem key="rightBarButtonItem" title="Сохранить" id="Onn-x0-e3q">
-                            <connections>
-                                <action selector="saveNoteButtonPressed:" destination="WGD-Ov-HJe" id="R9x-ve-7VR"/>
-                            </connections>
-                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Сохранить" id="Onn-x0-e3q"/>
                     </navigationItem>
                     <connections>
                         <outlet property="textView" destination="XWG-5l-DEM" id="zAe-lU-deh"/>
@@ -129,40 +125,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0yk-Ox-tBg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1564" y="-150"/>
-        </scene>
-        <!--Note Details View Controller-->
-        <scene sceneID="nMV-Ab-Ioq">
-            <objects>
-                <viewController id="PvG-Bk-oKD" customClass="NoteDetailsViewController" customModule="NotesKeeper" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="cZ5-Qw-0ky">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="M5Q-E8-EHn">
-                                <rect key="frame" x="0.0" y="64" width="375" height="559"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
-                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                            </textView>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <constraints>
-                            <constraint firstItem="M5Q-E8-EHn" firstAttribute="leading" secondItem="0QZ-AE-bYm" secondAttribute="leading" id="Kzz-tE-sE4"/>
-                            <constraint firstItem="0QZ-AE-bYm" firstAttribute="bottom" secondItem="M5Q-E8-EHn" secondAttribute="bottom" id="ZYp-50-L4B"/>
-                            <constraint firstItem="0QZ-AE-bYm" firstAttribute="trailing" secondItem="M5Q-E8-EHn" secondAttribute="trailing" id="mfC-nI-9xB"/>
-                            <constraint firstItem="M5Q-E8-EHn" firstAttribute="top" secondItem="0QZ-AE-bYm" secondAttribute="top" id="oyY-iL-1q9"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="0QZ-AE-bYm"/>
-                    </view>
-                    <connections>
-                        <outlet property="textField" destination="M5Q-E8-EHn" id="vFo-gQ-thp"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="oB7-Z9-93t" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1564" y="504"/>
+            <point key="canvasLocation" x="1569" y="155"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="aY0-6i-pvg">
@@ -183,4 +146,7 @@
             <point key="canvasLocation" x="36" y="164.16791604197903"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="Mky-I7-wod"/>
+    </inferredMetricsTieBreakers>
 </document>
