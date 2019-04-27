@@ -99,6 +99,9 @@
                         </barButtonItem>
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <segue destination="WGD-Ov-HJe" kind="show" identifier="EditNoteSegue" id="NLB-a2-u9L"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cW3-jp-s3W" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -159,6 +162,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="B3I-Qa-jLc"/>
+        <segue reference="NLB-a2-u9L"/>
     </inferredMetricsTieBreakers>
 </document>

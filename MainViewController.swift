@@ -15,6 +15,7 @@ class MainViewController: UITableViewController {
     var notes = [NoCoreDataNoteItem]()
     var notesList: [NSManagedObject] = []
     var selectedNote: Note?
+    var selectedNoteIndexPath: IndexPath?
     
     private func dummyNotes(from text: [String]) -> [NoCoreDataNoteItem] {
         var notes = [NoCoreDataNoteItem]()
@@ -30,6 +31,7 @@ class MainViewController: UITableViewController {
         super.viewDidLoad()
 
         notes = dummyNotes(from: testContent)
+
     }
     
     fileprivate func updateNotesList() {
@@ -45,6 +47,13 @@ class MainViewController: UITableViewController {
         super.viewWillAppear(animated)
         
         updateNotesList()
+        for item in notesList {
+//            print("objectID is \(item.objectID)")
+            
+            let note = item as! Note
+            let date = note.date?.description
+//            print(date)
+        }
     }
 
     // MARK: - Table view data source
@@ -87,7 +96,8 @@ class MainViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         let editAction = UITableViewRowAction(style: .normal, title: "Edit") { (rowAction, indexPath) in
             self.selectedNote = (self.notesList[indexPath.row] as! Note)
-            self.performSegue(withIdentifier: "DetailNoteSegue", sender: tableView)
+            self.selectedNoteIndexPath = indexPath
+            self.performSegue(withIdentifier: "EditNoteSegue", sender: tableView)
         }
         editAction.backgroundColor = UIColor.green
         return [editAction]
@@ -98,13 +108,22 @@ class MainViewController: UITableViewController {
             let controller = segue.destination as! CreateNoteViewController
             controller.note = selectedNote
             print("selectedNote in DetailNoteSegue is \(selectedNote!)")
-            controller.editMode = false
+            controller.createMode = false
             controller.managedContext = managedContext
         }
         if segue.identifier == "CreateNewNoteSegue" {
             let controller = segue.destination as! CreateNoteViewController
             controller.delegate = self
             controller.managedContext = managedContext
+        }
+        if segue.identifier == "EditNoteSegue" {
+            let controller = segue.destination as! CreateNoteViewController
+            controller.delegate = self
+            controller.managedContext = managedContext
+            controller.createMode = false
+            controller.editMode = true
+            controller.note = selectedNote
+            controller.selectedNoteIndexPath = selectedNoteIndexPath
         }
     }
     
@@ -128,5 +147,21 @@ extension MainViewController: CreateNoteViewControllerDelegate {
         notesList.append(note)
         tableView.reloadData()
         navigationController?.popViewController(animated: true)
+        print("\n\ndidFinishAdding end\n")
     }
+    
+    func createNoteViewController(_ controller: CreateNoteViewController, didFinishEditing editedNote: Note) {
+        print("\n\n didFinishEditing begitn\n")
+            
+        if let indexPath = selectedNoteIndexPath {
+            let range = indexPath.row...indexPath.row
+            print("\n range is \(range)")
+            notesList.replaceSubrange(range, with: [editedNote])
+            tableView.reloadData()
+            navigationController?.popViewController(animated: true)
+            print("\n\ndidFinishEditing end\n")
+        }
+        
+    }
+
 }
