@@ -12,25 +12,12 @@ import CoreData
 class MainViewController: UITableViewController {
     
     var managedContext: NSManagedObjectContext!
-    var notes = [NoCoreDataNoteItem]()
     var notesList: [NSManagedObject] = []
     var selectedNote: Note?
     var selectedNoteIndexPath: IndexPath?
     
-    private func dummyNotes(from text: [String]) -> [NoCoreDataNoteItem] {
-        var notes = [NoCoreDataNoteItem]()
-        for item in text {
-            notes.append(NoCoreDataNoteItem(text: item, date: Date()))
-        }
-        return notes
-    }
-  
-    let testContent = ["testing test testing test testingtesting testing test testing test testing test testing test testing test testing 100t ", "testing2 test2 testing", "testing3 test3 testing3 test3 testing3 test3 testing3 test3 testing3 test3 testing3 test3 testing3 test3 ", "testing4 test4 testing4 test4 testing4 test4 testing4 test4 /ntesting4 test4 testing4 test4 testing4 test4 testing4 test4 testing4 test4 testing4 test4 testing4 test4 testing4 test4 testing4 test4 testing4 test4 testing4 test4 testing4 test4 testing4 test4 testing4 test4 testing4 test4 testing4 test4 testing4 test4 testing4 test4 testing4 test4 testing4 test4 testing4 test4 testing4 test4 testing4 test4 testing4 test4 testing4 test4 testing4 test4 testing4 test4 testing4 test4 testing4 test4 testing4 test4 testing4 test4 testing4 test4 testing4 test4 "]
-
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        notes = dummyNotes(from: testContent)
 
     }
     
@@ -63,18 +50,11 @@ class MainViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return notes.count
         return notesList.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "NoteItem", for: indexPath) as! NoteTableViewCell
-//        let note = notes[indexPath.row]
-//        cell.noteLabel.text = note.text
-//        cell.dateLabel.text = note.dateString
-//        cell.timeLabel.text = note.timeString
-//
-//        return cell
         if let note = notesList[indexPath.row] as? Note {
             cell.noteLabel.text = note.text
             cell.dateLabel.text = note.dateString
@@ -89,7 +69,6 @@ class MainViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         selectedNote = notesList[indexPath.row] as? Note
-        print("selectedNote in willSelectRowAt is \(selectedNote!)")
         return indexPath
     }
     
@@ -99,15 +78,41 @@ class MainViewController: UITableViewController {
             self.selectedNoteIndexPath = indexPath
             self.performSegue(withIdentifier: "EditNoteSegue", sender: tableView)
         }
+        
+        let deleteAction = UITableViewRowAction(style: .destructive, title: "Delete") { (rowAction, indexPath) in
+            let note = self.notesList[indexPath.row] as! Note
+            let date = note.date!
+            
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Note")
+            fetchRequest.predicate = NSPredicate(format: "date = %@", date as NSDate)
+            
+            do {
+                let fetchResult = try self.managedContext.fetch(fetchRequest)
+                let noteToDelete = fetchResult[0] as! NSManagedObject
+                self.managedContext.delete(noteToDelete)
+                
+                do  {
+                    try self.managedContext.save()
+                } catch let error as NSError {
+                    print("Could not save. \(error), \(error.userInfo)")
+                }
+            } catch let error as NSError {
+                print("Could not delete. \(error), \(error.userInfo)")
+            }
+
+            self.notesList.remove(at: indexPath.row)
+            
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+        }
+        
         editAction.backgroundColor = UIColor.green
-        return [editAction]
+        return [deleteAction, editAction]
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "DetailNoteSegue" {
             let controller = segue.destination as! CreateNoteViewController
             controller.note = selectedNote
-            print("selectedNote in DetailNoteSegue is \(selectedNote!)")
             controller.createMode = false
             controller.managedContext = managedContext
         }
@@ -147,19 +152,14 @@ extension MainViewController: CreateNoteViewControllerDelegate {
         notesList.append(note)
         tableView.reloadData()
         navigationController?.popViewController(animated: true)
-        print("\n\ndidFinishAdding end\n")
     }
     
     func createNoteViewController(_ controller: CreateNoteViewController, didFinishEditing editedNote: Note) {
-        print("\n\n didFinishEditing begitn\n")
-            
         if let indexPath = selectedNoteIndexPath {
             let range = indexPath.row...indexPath.row
-            print("\n range is \(range)")
             notesList.replaceSubrange(range, with: [editedNote])
             tableView.reloadData()
             navigationController?.popViewController(animated: true)
-            print("\n\ndidFinishEditing end\n")
         }
         
     }
