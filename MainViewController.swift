@@ -114,11 +114,16 @@ class MainViewController: UITableViewController {
             let controller = segue.destination as! CreateNoteViewController
             controller.note = selectedNote
             controller.createMode = false
+            controller.editMode = false
+            controller.shareMode = true
             controller.managedContext = managedContext
         }
         if segue.identifier == "CreateNewNoteSegue" {
             let controller = segue.destination as! CreateNoteViewController
             controller.delegate = self
+            controller.createMode = true
+            controller.editMode = false
+            controller.shareMode = false
             controller.managedContext = managedContext
         }
         if segue.identifier == "EditNoteSegue" {
@@ -127,6 +132,7 @@ class MainViewController: UITableViewController {
             controller.managedContext = managedContext
             controller.createMode = false
             controller.editMode = true
+            controller.shareMode = false
             controller.note = selectedNote
             controller.selectedNoteIndexPath = selectedNoteIndexPath
         }

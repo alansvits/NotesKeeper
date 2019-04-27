@@ -20,9 +20,11 @@ class CreateNoteViewController: UIViewController {
     
     weak var delegate: CreateNoteViewControllerDelegate?
     var saveButton: UIBarButtonItem!
+    var shareButton: UIBarButtonItem?
     var selectedNoteIndexPath: IndexPath?
     var createMode = true
     var editMode = false
+    var shareMode = false
     var note: Note?
     var managedContext: NSManagedObjectContext!
     
@@ -30,7 +32,8 @@ class CreateNoteViewController: UIViewController {
         super.viewDidLoad()
         
         saveButton = UIBarButtonItem(title: "Сохранить", style: .plain, target: self, action: #selector(saveNoteButtonPressed(_:)))
-        showSaveButton()
+        shareButton = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareButtonPressed(_:)))
+//        showSaveButton()
         chooseRightBarButtonTitle()
         
         textView.contentInset = UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
@@ -40,6 +43,12 @@ class CreateNoteViewController: UIViewController {
         let noteID = note?.objectID
         print("\n\nCreateNoteViewController, noteID is \(String(describing: noteID))\n\n")
         
+    }
+    
+    @objc func shareButtonPressed(_ sender: Any) {
+        let text = [textView.text]
+        let activityViewController = UIActivityViewController(activityItems: text, applicationActivities: nil)
+        present(activityViewController, animated: true, completion: {})
     }
     
     @objc func saveNoteButtonPressed(_ sender: Any) {
@@ -98,12 +107,21 @@ class CreateNoteViewController: UIViewController {
     
     private func chooseRightBarButtonTitle() {
         if createMode {
+            navigationItem.rightBarButtonItem = saveButton
             navigationItem.rightBarButtonItem?.title = "Сохранить"
             editMode = false
+            shareMode = false
         }
         if editMode {
+            navigationItem.rightBarButtonItem = saveButton
             navigationItem.rightBarButtonItem?.title = "Редактировать"
             createMode = false
+            shareMode = false
+        }
+        if shareMode {
+            navigationItem.rightBarButtonItem = shareButton
+            createMode = false
+            editMode = false
         }
     }
 
