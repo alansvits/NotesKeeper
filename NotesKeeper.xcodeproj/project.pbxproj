@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		6407BC2E22735725000D343E /* Note+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6407BC2D22735725000D343E /* Note+Extension.swift */; };
+		6407BC3022745BAA000D343E /* UISearchBar+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6407BC2F22745BAA000D343E /* UISearchBar+Extension.swift */; };
 		641EE58A2272266B00C3606B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641EE5892272266B00C3606B /* AppDelegate.swift */; };
 		641EE58F2272266B00C3606B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 641EE58D2272266B00C3606B /* Main.storyboard */; };
 		641EE5912272266C00C3606B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 641EE5902272266C00C3606B /* Assets.xcassets */; };
@@ -22,6 +23,7 @@
 
 /* Begin PBXFileReference section */
 		6407BC2D22735725000D343E /* Note+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Note+Extension.swift"; sourceTree = "<group>"; };
+		6407BC2F22745BAA000D343E /* UISearchBar+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UISearchBar+Extension.swift"; sourceTree = "<group>"; };
 		641EE5862272266B00C3606B /* NotesKeeper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NotesKeeper.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		641EE5892272266B00C3606B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		641EE58E2272266B00C3606B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -89,6 +91,7 @@
 			isa = PBXGroup;
 			children = (
 				641EE59D2272C11C00C3606B /* NoteTableViewCell.swift */,
+				6407BC2F22745BAA000D343E /* UISearchBar+Extension.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -185,6 +188,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6407BC3022745BAA000D343E /* UISearchBar+Extension.swift in Sources */,
 				641EE58A2272266B00C3606B /* AppDelegate.swift in Sources */,
 				641EE59C2272C09E00C3606B /* MainViewController.swift in Sources */,
 				64BDC194227342C300F0A8D5 /* NotesKepper.xcdatamodeld in Sources */,

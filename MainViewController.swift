@@ -13,12 +13,22 @@ class MainViewController: UITableViewController {
     
     var managedContext: NSManagedObjectContext!
     var notesList: [NSManagedObject] = []
+    var filteredNotes = [Note]()
     var selectedNote: Note?
     var selectedNoteIndexPath: IndexPath?
+    let searchController = UISearchController(searchResultsController: nil)
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        //SearchBar setup
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
+        searchController.hidesNavigationBarDuringPresentation = false
+        searchController.searchBar.setTextFieldColor(color: UIColor.UIColorFromRGB(rgbValue: 0xF1F1F2))
+        definesPresentationContext = true
     }
     
     fileprivate func updateNotesList() {
@@ -50,21 +60,25 @@ class MainViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if isFiltering() {
+            return filteredNotes.count
+        }
         return notesList.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "NoteItem", for: indexPath) as! NoteTableViewCell
-        if let note = notesList[indexPath.row] as? Note {
-            cell.noteLabel.text = note.text
-            cell.dateLabel.text = note.dateString
-            cell.timeLabel.text = note.timeString
+        let note: Note
+        if isFiltering() {
+            note = filteredNotes[indexPath.row]
+        } else {
+            note = notesList[indexPath.row] as! Note
         }
-        return cell
-    }
-    
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        cell.noteLabel.text = note.text
+        cell.dateLabel.text = note.dateString
+        cell.timeLabel.text = note.timeString
 
+        return cell
     }
     
     override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
@@ -137,7 +151,7 @@ class MainViewController: UITableViewController {
             controller.selectedNoteIndexPath = selectedNoteIndexPath
         }
     }
-    
+    // MARK: - Private instance methods
     private func saveNote(text: String) {
         let entity = NSEntityDescription.entity(forEntityName: "Note", in: managedContext)!
         let note = NSManagedObject(entity: entity, insertInto: managedContext)
@@ -149,6 +163,22 @@ class MainViewController: UITableViewController {
         } catch let error as NSError {
             print("Could not save. \(error), \(error.userInfo)")
         }
+    }
+    
+    private func searchBarIsEmpty() -> Bool {
+        return searchController.searchBar.text?.isEmpty ?? true
+    }
+    
+    private func filterContentForSearchText(_ searchText: String, scope: String = "All") {
+        
+        filteredNotes = (notesList as! [Note]).filter({ (note) -> Bool in
+            return (note.text?.lowercased().contains(searchText.lowercased()))!
+        })
+        tableView.reloadData()
+    }
+    
+    private func isFiltering() -> Bool {
+        return searchController.isActive && !searchBarIsEmpty()
     }
 
 }
@@ -170,4 +200,11 @@ extension MainViewController: CreateNoteViewControllerDelegate {
         
     }
 
+}
+
+extension MainViewController: UISearchResultsUpdating {
+    // MARK: - UISearchResultsUpdating Delegate
+    func updateSearchResults(for searchController: UISearchController) {
+        filterContentForSearchText(searchController.searchBar.text!)
+    }
 }
