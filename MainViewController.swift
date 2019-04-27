@@ -82,6 +82,7 @@ class MainViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+//        searchController.searchBar.endEditing(true)
         selectedNote = notesList[indexPath.row] as? Note
         return indexPath
     }
@@ -94,6 +95,7 @@ class MainViewController: UITableViewController {
         }
         
         let deleteAction = UITableViewRowAction(style: .destructive, title: "Delete") { (rowAction, indexPath) in
+/*
             let note = self.notesList[indexPath.row] as! Note
             let date = note.date!
             
@@ -115,7 +117,9 @@ class MainViewController: UITableViewController {
             }
 
             self.notesList.remove(at: indexPath.row)
+*/
             
+            self.deleteNote(at: indexPath, when: self.isFiltering())
             tableView.deleteRows(at: [indexPath], with: .automatic)
         }
         
@@ -170,7 +174,6 @@ class MainViewController: UITableViewController {
     }
     
     private func filterContentForSearchText(_ searchText: String, scope: String = "All") {
-        
         filteredNotes = (notesList as! [Note]).filter({ (note) -> Bool in
             return (note.text?.lowercased().contains(searchText.lowercased()))!
         })
@@ -179,6 +182,53 @@ class MainViewController: UITableViewController {
     
     private func isFiltering() -> Bool {
         return searchController.isActive && !searchBarIsEmpty()
+    }
+    
+    private func deleteNote(at indexPath: IndexPath, when filtering: Bool) {
+        if filtering {
+            let note = self.filteredNotes[indexPath.row]
+            let date = note.date!
+            
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Note")
+            fetchRequest.predicate = NSPredicate(format: "date = %@", date as NSDate)
+            
+            do {
+                let fetchResult = try self.managedContext.fetch(fetchRequest)
+                let noteToDelete = fetchResult[0] as! NSManagedObject
+                self.managedContext.delete(noteToDelete)
+                
+                do  {
+                    try self.managedContext.save()
+                } catch let error as NSError {
+                    print("Could not save. \(error), \(error.userInfo)")
+                }
+            } catch let error as NSError {
+                print("Could not delete. \(error), \(error.userInfo)")
+            }
+            self.filteredNotes.remove(at: indexPath.row)
+            self.updateNotesList()
+        } else {
+            let note = self.notesList[indexPath.row] as! Note
+            let date = note.date!
+            
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Note")
+            fetchRequest.predicate = NSPredicate(format: "date = %@", date as NSDate)
+            
+            do {
+                let fetchResult = try self.managedContext.fetch(fetchRequest)
+                let noteToDelete = fetchResult[0] as! NSManagedObject
+                self.managedContext.delete(noteToDelete)
+                
+                do  {
+                    try self.managedContext.save()
+                } catch let error as NSError {
+                    print("Could not save. \(error), \(error.userInfo)")
+                }
+            } catch let error as NSError {
+                print("Could not delete. \(error), \(error.userInfo)")
+            }
+            self.notesList.remove(at: indexPath.row)
+        }
     }
 
 }
