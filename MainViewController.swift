@@ -48,7 +48,7 @@ class MainViewController: UITableViewController {
 //            print("objectID is \(item.objectID)")
             
             let note = item as! Note
-            let date = note.date?.description
+            _ = note.date?.description
 //            print(date)
         }
     }
@@ -82,43 +82,18 @@ class MainViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-//        searchController.searchBar.endEditing(true)
-        selectedNote = notesList[indexPath.row] as? Note
+        selectedNote = getNote(at: indexPath, when: isFiltering())
         return indexPath
     }
     
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         let editAction = UITableViewRowAction(style: .normal, title: "Edit") { (rowAction, indexPath) in
-            self.selectedNote = (self.notesList[indexPath.row] as! Note)
+            self.selectedNote = self.getNote(at: indexPath, when: self.isFiltering())
             self.selectedNoteIndexPath = indexPath
             self.performSegue(withIdentifier: "EditNoteSegue", sender: tableView)
         }
         
         let deleteAction = UITableViewRowAction(style: .destructive, title: "Delete") { (rowAction, indexPath) in
-/*
-            let note = self.notesList[indexPath.row] as! Note
-            let date = note.date!
-            
-            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Note")
-            fetchRequest.predicate = NSPredicate(format: "date = %@", date as NSDate)
-            
-            do {
-                let fetchResult = try self.managedContext.fetch(fetchRequest)
-                let noteToDelete = fetchResult[0] as! NSManagedObject
-                self.managedContext.delete(noteToDelete)
-                
-                do  {
-                    try self.managedContext.save()
-                } catch let error as NSError {
-                    print("Could not save. \(error), \(error.userInfo)")
-                }
-            } catch let error as NSError {
-                print("Could not delete. \(error), \(error.userInfo)")
-            }
-
-            self.notesList.remove(at: indexPath.row)
-*/
-            
             self.deleteNote(at: indexPath, when: self.isFiltering())
             tableView.deleteRows(at: [indexPath], with: .automatic)
         }
@@ -229,6 +204,16 @@ class MainViewController: UITableViewController {
             }
             self.notesList.remove(at: indexPath.row)
         }
+    }
+    
+    private func getNote(at indexPath: IndexPath, when isFilteting: Bool) -> Note {
+        let note: Note
+        if isFilteting {
+            note = filteredNotes[indexPath.row]
+        } else {
+            note = notesList[indexPath.row] as! Note
+        }
+        return note
     }
 
 }
