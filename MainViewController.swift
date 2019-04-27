@@ -84,6 +84,15 @@ class MainViewController: UITableViewController {
         return indexPath
     }
     
+    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        let editAction = UITableViewRowAction(style: .normal, title: "Edit") { (rowAction, indexPath) in
+            self.selectedNote = (self.notesList[indexPath.row] as! Note)
+            self.performSegue(withIdentifier: "DetailNoteSegue", sender: tableView)
+        }
+        editAction.backgroundColor = UIColor.green
+        return [editAction]
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "DetailNoteSegue" {
             let controller = segue.destination as! CreateNoteViewController
