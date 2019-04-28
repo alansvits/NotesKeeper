@@ -21,49 +21,50 @@ class CreateNoteViewController: UIViewController {
     weak var delegate: CreateNoteViewControllerDelegate?
     var saveButton: UIBarButtonItem!
     var shareButton: UIBarButtonItem?
-    var selectedNoteIndexPath: IndexPath?
-    var createMode = true
-    var editMode = false
-    var shareMode = false
-    var note: Note?
+    var editButton: UIBarButtonItem!
+    var notesList: Noteslist!
     var managedContext: NSManagedObjectContext!
     
+    //MARK: - METHODS
     override func viewDidLoad() {
         super.viewDidLoad()
         
         saveButton = UIBarButtonItem(title: "Сохранить", style: .plain, target: self, action: #selector(saveNoteButtonPressed(_:)))
         shareButton = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareButtonPressed(_:)))
-//        showSaveButton()
-        chooseRightBarButtonTitle()
+        editButton = UIBarButtonItem(title: "Редактировать", style: .plain, target: self, action: #selector(editButtonPressed(_:)))
+        chooseRightBarButton()
         
         textView.contentInset = UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
-        textView.text = note?.text ?? ""
+        textView.text = notesList?.selectedNote?.text ?? ""
         setupTextView()
-        
-        let noteID = note?.objectID
-        print("\n\nCreateNoteViewController, noteID is \(String(describing: noteID))\n\n")
-        
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        notesList.selectedNote = nil
     }
     
     @objc func shareButtonPressed(_ sender: Any) {
         let text = [textView.text]
-        let activityViewController = UIActivityViewController(activityItems: text, applicationActivities: nil)
+        let activityViewController = UIActivityViewController(activityItems: text as [Any], applicationActivities: nil)
         present(activityViewController, animated: true, completion: {})
     }
     
-    @objc func saveNoteButtonPressed(_ sender: Any) {
-        if editMode && !createMode {
-            if let note = note {
+    @objc func editButtonPressed(_ sender: Any) {
+        if notesList.mode! == .edit  {
+            if let note = notesList.selectedNote {
                 editNote()
                 delegate?.createNoteViewController(self, didFinishEditing: note)
-                self.note = nil
-                print("\n\nif editMode && !createMode: \(note.objectID)\n\n")
+                self.notesList.selectedNote = nil
+//                print("\n\nif editMode && !createMode: \(note.objectID)\n\n")
             }
         }
-        if createMode && !editMode {
+    }
+    
+    @objc func saveNoteButtonPressed(_ sender: Any) {
+        if notesList.mode! == .create {
             let text = textView.text!
             let entity = NSEntityDescription.entity(forEntityName: "Note", in: managedContext)!
-            
             let note = NSManagedObject(entity: entity, insertInto: managedContext)
             note.setValue(text, forKey: "text")
             note.setValue(Date(), forKey: "date")
@@ -72,14 +73,15 @@ class CreateNoteViewController: UIViewController {
             } catch let error as NSError {
                 print("Could not save. \(error), \(error.userInfo)")
             }
-            self.note = nil
+//            self.notesList.selectedNote = nil
             delegate?.createNoteViewController(self, didFinishAdding: note as! Note)
         }
     }
     
+    //MARK: - Private Methods
     private func editNote() {
-        note?.text = textView.text
-        note?.date = Date()
+        notesList.selectedNote?.text = textView.text
+        notesList.selectedNote?.date = Date()
         do {
             try managedContext.save()
         } catch let error as NSError {
@@ -87,41 +89,28 @@ class CreateNoteViewController: UIViewController {
         }
     }
     
-    private func showSaveButton() {
-        if !createMode && !editMode {
-            navigationItem.rightBarButtonItem = nil
-        } else {
-            navigationItem.rightBarButtonItem = saveButton
-        }
-    }
-    
     private func setupTextView() {
-        if createMode || editMode {
-            textView.isEditable = true
-            textView.becomeFirstResponder()
-        } else {
+        if notesList.mode! == .share {
             textView.isEditable = false
             textView.resignFirstResponder()
+        } else {
+            textView.isEditable = true
+            textView.becomeFirstResponder()
         }
     }
     
-    private func chooseRightBarButtonTitle() {
-        if createMode {
-            navigationItem.rightBarButtonItem = saveButton
-            navigationItem.rightBarButtonItem?.title = "Сохранить"
-            editMode = false
-            shareMode = false
-        }
-        if editMode {
-            navigationItem.rightBarButtonItem = saveButton
-            navigationItem.rightBarButtonItem?.title = "Редактировать"
-            createMode = false
-            shareMode = false
-        }
-        if shareMode {
-            navigationItem.rightBarButtonItem = shareButton
-            createMode = false
-            editMode = false
+    private func chooseRightBarButton() {
+        if let mode = notesList.mode {
+            switch mode {
+            case .create:
+                navigationItem.rightBarButtonItem = saveButton
+            case .edit:
+                navigationItem.rightBarButtonItem = editButton
+            case .share:
+                navigationItem.rightBarButtonItem = shareButton
+            }
+        } else {
+            print("Mode is \(String(describing: notesList.mode))")
         }
     }
 

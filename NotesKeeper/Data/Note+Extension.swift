@@ -6,7 +6,7 @@
 //  Copyright © 2019 Stas Shetko. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 extension Note {
     var dateString: String {

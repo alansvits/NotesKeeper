@@ -3,16 +3,8 @@
     <entity name="Note" representedClassName="Note" syncable="YES" codeGenerationType="class">
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="text" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="notesList" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="NotesList" inverseName="notes" inverseEntity="NotesList" syncable="YES"/>
-    </entity>
-    <entity name="NotesList" representedClassName="NotesList" syncable="YES" codeGenerationType="class">
-        <relationship name="notes" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Note" inverseName="notesList" inverseEntity="Note" syncable="YES"/>
-        <fetchedProperty name="fetchedProperty" optional="YES" syncable="YES">
-            <fetchRequest name="fetchedPropertyFetchRequest" entity="NotesList"/>
-        </fetchedProperty>
     </entity>
     <elements>
-        <element name="Note" positionX="160" positionY="192" width="128" height="90"/>
-        <element name="NotesList" positionX="-19.7890625" positionY="5.70703125" width="128" height="89"/>
+        <element name="Note" positionX="160" positionY="192" width="128" height="75"/>
     </elements>
 </model>
