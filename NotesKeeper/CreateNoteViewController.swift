@@ -23,7 +23,7 @@ class CreateNoteViewController: UIViewController {
     var shareButton: UIBarButtonItem?
     var editButton: UIBarButtonItem!
     var notesList: Noteslist!
-    var managedContext: NSManagedObjectContext!
+//    var managedContext: NSManagedObjectContext!
     
     //MARK: - METHODS
     override func viewDidLoad() {
@@ -64,17 +64,13 @@ class CreateNoteViewController: UIViewController {
     @objc func saveNoteButtonPressed(_ sender: Any) {
         if notesList.mode! == .create {
             let text = textView.text!
-            let entity = NSEntityDescription.entity(forEntityName: "Note", in: managedContext)!
-            let note = NSManagedObject(entity: entity, insertInto: managedContext)
-            note.setValue(text, forKey: "text")
-            note.setValue(Date(), forKey: "date")
+            let note = Note(text: text, date: Date(), insertInto: notesList.managedContext)
             do {
-                try managedContext.save()
+                try notesList.managedContext.save()
             } catch let error as NSError {
                 print("Could not save. \(error), \(error.userInfo)")
             }
-//            self.notesList.selectedNote = nil
-            delegate?.createNoteViewController(self, didFinishAdding: note as! Note)
+            delegate?.createNoteViewController(self, didFinishAdding: note)
         }
     }
     
@@ -82,11 +78,7 @@ class CreateNoteViewController: UIViewController {
     private func editNote() {
         notesList.selectedNote?.text = textView.text
         notesList.selectedNote?.date = Date()
-        do {
-            try managedContext.save()
-        } catch let error as NSError {
-            print("Could not saved edited note. \(error), \(error.userInfo)")
-        }
+        notesList.saveManagedContext()
     }
     
     private func setupTextView() {

@@ -12,7 +12,7 @@ import CoreData
 class MainViewController: UITableViewController {
     
     var managedContext: NSManagedObjectContext!
-    let notesList = Noteslist()
+    var notesList: Noteslist!
     let searchController = UISearchController(searchResultsController: nil)
     var fetchLimit = 20
     var fetchOffset = 0
@@ -39,21 +39,21 @@ class MainViewController: UITableViewController {
             let controller = segue.destination as! CreateNoteViewController
             notesList.mode = .share
             controller.notesList = notesList
-            controller.managedContext = managedContext
+//            controller.managedContext = managedContext
         }
         if segue.identifier == "CreateNewNoteSegue" {
             let controller = segue.destination as! CreateNoteViewController
             notesList.mode = .create
             controller.notesList = notesList
             controller.delegate = self
-            controller.managedContext = managedContext
+//            controller.managedContext = managedContext
         }
         if segue.identifier == "EditNoteSegue" {
             let controller = segue.destination as! CreateNoteViewController
             notesList.mode = .edit
             controller.notesList = notesList
             controller.delegate = self
-            controller.managedContext = managedContext
+//            controller.managedContext = managedContext
         }
     }
 
@@ -132,7 +132,7 @@ class MainViewController: UITableViewController {
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Note")
         do {
 //            print("\n Returns the number of objects \(try managedContext.count(for: fetchRequest))")
-            notesList.notes = try managedContext.fetch(fetchRequest) as! [Note]
+            notesList.notes = try notesList.managedContext.fetch(fetchRequest) as! [Note]
         } catch let error as NSError {
             print("Could not fetch. \(error), \(error.userInfo)")
         }
@@ -147,12 +147,12 @@ class MainViewController: UITableViewController {
             fetchRequest.predicate = NSPredicate(format: "date = %@", date as NSDate)
             
             do {
-                let fetchResult = try self.managedContext.fetch(fetchRequest)
+                let fetchResult = try self.notesList.managedContext.fetch(fetchRequest)
                 let noteToDelete = fetchResult[0] as! NSManagedObject
                 self.managedContext.delete(noteToDelete)
                 
                 do  {
-                    try self.managedContext.save()
+                    try self.notesList.managedContext.save()
                 } catch let error as NSError {
                     print("Could not save. \(error), \(error.userInfo)")
                 }
@@ -169,12 +169,12 @@ class MainViewController: UITableViewController {
             fetchRequest.predicate = NSPredicate(format: "date = %@", date as NSDate)
             
             do {
-                let fetchResult = try self.managedContext.fetch(fetchRequest)
+                let fetchResult = try self.notesList.managedContext.fetch(fetchRequest)
                 let noteToDelete = fetchResult[0] as! NSManagedObject
-                self.managedContext.delete(noteToDelete)
+                self.notesList.managedContext.delete(noteToDelete)
                 
                 do  {
-                    try self.managedContext.save()
+                    try self.notesList.managedContext.save()
                 } catch let error as NSError {
                     print("Could not save. \(error), \(error.userInfo)")
                 }
@@ -211,20 +211,26 @@ class MainViewController: UITableViewController {
     }
     
     //TODO: - Need finishing
-    private func getNotesFromDB(_ fetchOffSet: Int) -> [Any] {
-        var record = [Any]() /* capacity: 0 */
+    private func getNotesFromDB(_ fetchOffSet: Int) -> [Note] {
+        var notes = [Note]()
         //        var context: NSManagedObjectContext? = self.getManagedObjectContext()
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Note")
         fetchRequest.fetchLimit = fetchLimit
         fetchRequest.fetchOffset = fetchOffSet
-        let entityDesc = NSEntityDescription.entity(forEntityName: "Note", in: self.managedContext)
-        fetchRequest.entity = entityDesc
-        var fetchedOjects = try? self.managedContext.fetch(fetchRequest)
-        for i in 0..<fetchedOjects!.count {
-            let note: Note = fetchedOjects![i] as! Note
-            record.append(note)
+        do {
+            notes = try self.notesList.managedContext.fetch(fetchRequest) as! [Note]
+        } catch let error as NSError {
+            print("Could not fetch. \(error), \(error.userInfo)")
         }
-        return record
+        return notes
+//        let entityDesc = NSEntityDescription.entity(forEntityName: "Note", in: self.managedContext)
+//        fetchRequest.entity = entityDesc
+//        var fetchedOjects = try? self.managedContext.fetch(fetchRequest)
+//        for i in 0..<fetchedOjects!.count {
+//            let note: Note = fetchedOjects![i] as! Note
+//            record.append(note)
+//        }
+//        return record
     }
     
     @objc private func reloadTable() {
@@ -235,7 +241,7 @@ class MainViewController: UITableViewController {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Note")
         let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
         do {
-            try managedContext.execute(deleteRequest)
+            try self.notesList.managedContext.execute(deleteRequest)
         } catch let error as NSError {
             print("Could not delete all data. \(error), \(error.userInfo)")
         }
@@ -253,7 +259,7 @@ class MainViewController: UITableViewController {
         note.setValue(text, forKey: "text")
         note.setValue(Date(), forKey: "date")
         do {
-            try managedContext.save()
+            try self.notesList.managedContext.save()
             notesList.notes.append(note as! Note)
         } catch let error as NSError {
             print("Could not save. \(error), \(error.userInfo)")

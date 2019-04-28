@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 extension Note {
     var dateString: String {
@@ -19,5 +20,16 @@ extension Note {
         let dateTimeFormatter = DateFormatter()
         dateTimeFormatter.dateFormat = "HH:mm"
         return dateTimeFormatter.string(from: self.date!)
+    }
+    
+    func changeDate(_ date: Date) {
+        self.date = date
+    }
+    
+    convenience init(text: String, date: Date, insertInto managedObjectContext: NSManagedObjectContext) {
+        let entity = NSEntityDescription.entity(forEntityName: "Note", in: managedObjectContext)!
+        self.init(entity: entity, insertInto: managedObjectContext)
+        self.text = text
+        self.date = date
     }
 }

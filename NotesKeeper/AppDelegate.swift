@@ -20,8 +20,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         guard let navController = window?.rootViewController as? UINavigationController, let mainViewController = navController.topViewController as? MainViewController else {
             return true
         }
-        
-        mainViewController.managedContext = coreDataStack.managedContext
+        let notesList = Noteslist(with: coreDataStack.managedContext)
+        mainViewController.notesList = notesList
         return true
     }
 
