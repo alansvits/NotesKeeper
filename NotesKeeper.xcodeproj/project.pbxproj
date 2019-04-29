@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		6407BC2E22735725000D343E /* Note+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6407BC2D22735725000D343E /* Note+Extension.swift */; };
 		6407BC3322758933000D343E /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6407BC3222758933000D343E /* UIColor+Extension.swift */; };
+		6411691122770DD200CECFD1 /* SpinnerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6411691022770DD200CECFD1 /* SpinnerViewController.swift */; };
+		641169132277244D00CECFD1 /* PagingTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641169122277244D00CECFD1 /* PagingTableView.swift */; };
 		641EE58A2272266B00C3606B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641EE5892272266B00C3606B /* AppDelegate.swift */; };
 		641EE58F2272266B00C3606B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 641EE58D2272266B00C3606B /* Main.storyboard */; };
 		641EE5912272266C00C3606B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 641EE5902272266C00C3606B /* Assets.xcassets */; };
@@ -24,6 +26,8 @@
 /* Begin PBXFileReference section */
 		6407BC2D22735725000D343E /* Note+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Note+Extension.swift"; sourceTree = "<group>"; };
 		6407BC3222758933000D343E /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
+		6411691022770DD200CECFD1 /* SpinnerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinnerViewController.swift; sourceTree = "<group>"; };
+		641169122277244D00CECFD1 /* PagingTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PagingTableView.swift; sourceTree = "<group>"; };
 		641EE5862272266B00C3606B /* NotesKeeper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NotesKeeper.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		641EE5892272266B00C3606B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		641EE58E2272266B00C3606B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -92,6 +96,7 @@
 			children = (
 				641EE59B2272C09E00C3606B /* MainViewController.swift */,
 				641EE5A12272F15B00C3606B /* CreateNoteViewController.swift */,
+				6411691022770DD200CECFD1 /* SpinnerViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -100,6 +105,7 @@
 			isa = PBXGroup;
 			children = (
 				641EE59D2272C11C00C3606B /* NoteTableViewCell.swift */,
+				641169122277244D00CECFD1 /* PagingTableView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -200,6 +206,8 @@
 				641EE59C2272C09E00C3606B /* MainViewController.swift in Sources */,
 				64BDC194227342C300F0A8D5 /* NotesKepper.xcdatamodeld in Sources */,
 				641EE5A22272F15B00C3606B /* CreateNoteViewController.swift in Sources */,
+				641169132277244D00CECFD1 /* PagingTableView.swift in Sources */,
+				6411691122770DD200CECFD1 /* SpinnerViewController.swift in Sources */,
 				64BDC19122733D5F00F0A8D5 /* CoreDataStack.swift in Sources */,
 				6407BC2E22735725000D343E /* Note+Extension.swift in Sources */,
 				641EE59E2272C11C00C3606B /* NoteTableViewCell.swift in Sources */,

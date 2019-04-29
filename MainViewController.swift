@@ -14,17 +14,40 @@ class MainViewController: UITableViewController {
     var managedContext: NSManagedObjectContext!
     var notesList: Noteslist!
     let searchController = UISearchController(searchResultsController: nil)
-    var fetchLimit = 20
+    var fetchLimit = 10
     var fetchOffset = 0
+    
+    fileprivate lazy var activityIndicatorView: UIActivityIndicatorView = {
+        let activityIndicatorView = UIActivityIndicatorView(style: .whiteLarge)
+        activityIndicatorView.hidesWhenStopped = true
+        activityIndicatorView.color = UIColor.red
+        
+        // Set Center
+        var center = self.view.center
+        if let navigationBarFrame = self.navigationController?.navigationBar.frame {
+            center.y -= (navigationBarFrame.origin.y + navigationBarFrame.size.height)
+        }
+        activityIndicatorView.center = center
+        
+        self.view.addSubview(activityIndicatorView)
+        return activityIndicatorView
+    }()
     
     //MARK: - Methods
     override func viewDidLoad() {
         super.viewDidLoad()
+        notesList.numberOfItemsPerPage = 20
+        (tableView as! PagingTableView).pagingDelegate = self
 //                deleteAllRecords()
-//        createDummyNotes(with: 30)
-        notesList.updateNotesList()
+//        createDummyNotes(with: 60)
+        
+//        notesList.notes = getNotesFromDB(notesList.notes.count)
+//        notesList.updateNotesList()
         //SearchBar setup
         searchBarSetup()
+//        activityIndicatorView.startAnimating()
+//        createSpinnerView()
+        
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -56,10 +79,13 @@ class MainViewController: UITableViewController {
 
     // MARK: - Table view methods
     override func numberOfSections(in tableView: UITableView) -> Int {
+        print("\n test: numberOfSections \n")
         return 1
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        print("\n test: numberOfRowsInSection \n")
+
         if isFiltering() {
             return notesList.filteredNotes.count
         }
@@ -68,6 +94,8 @@ class MainViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        print("\n test: cellForRowAt \(indexPath.row)\n")
+
         let cell = tableView.dequeueReusableCell(withIdentifier: "NoteItem", for: indexPath) as! NoteTableViewCell
         let note: Note
         if isFiltering() {
@@ -90,13 +118,16 @@ class MainViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-//        if indexPath.row == notesList.count - 1 {
-//            let newPart = getNotesFromDB(notesList.count) as! [Note]
+        print("\n test: willDisplay cell \(indexPath.row)\n")
+
+//        print("\n notesList.notes.count :\(notesList.notes.count), and row is \(indexPath.row)")
+//
+//        if indexPath.row == notesList.notes.count - 1 {
+//            let newPart = getNotesFromDB(notesList.notes.count)
 //            if newPart.count > 0 {
-//                print("\n newPart.count in willDisplay cell: \(newPart.count)")
-//                notesList += newPart
-//                print("\n notesList.count in willDisplay cell: \(notesList.count)")
-//            self.perform(#selector(reloadTable), with: nil, afterDelay: 1.0)
+//                notesList.notes += newPart
+////            self.perform(#selector(reloadTable), with: nil, afterDelay: 1.0)
+////                tableView.reloadData()
 //            }
 //        }
     }
@@ -186,6 +217,24 @@ class MainViewController: UITableViewController {
 //        return record
     }
     
+    func createSpinnerView() {
+        let child = SpinnerViewController()
+        
+        // add the spinner view controller
+        addChild(child)
+        child.view.frame = view.frame
+        view.addSubview(child.view)
+        child.didMove(toParent: self)
+        
+        // wait two seconds to simulate some work happening
+        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+            // then remove the spinner view controller
+            child.willMove(toParent: nil)
+            child.view.removeFromSuperview()
+            child.removeFromParent()
+        }
+    }
+    
     @objc private func reloadTable() {
         tableView.reloadData()
     }
@@ -233,5 +282,16 @@ extension MainViewController: CreateNoteViewControllerDelegate {
 extension MainViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         filterContentForSearchText(searchController.searchBar.text!)
+    }
+}
+
+//MARK: - PagingTableViewDelegate
+extension MainViewController: PagingTableViewDelegate {
+    func paginate(_ tableView: PagingTableView, to page: Int) {
+        tableView.isLoading = true
+        notesList.loadNotes(at: page) { (notes) in
+            self.notesList.notes.append(contentsOf: notes)
+            (self.tableView as! PagingTableView).isLoading = false
+        }
     }
 }
