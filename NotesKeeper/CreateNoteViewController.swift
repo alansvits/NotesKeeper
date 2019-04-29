@@ -32,10 +32,8 @@ class CreateNoteViewController: UIViewController {
         saveButton = UIBarButtonItem(title: "Сохранить", style: .plain, target: self, action: #selector(saveNoteButtonPressed(_:)))
         shareButton = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareButtonPressed(_:)))
         editButton = UIBarButtonItem(title: "Редактировать", style: .plain, target: self, action: #selector(editButtonPressed(_:)))
-        chooseRightBarButton()
         
-        textView.contentInset = UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
-        textView.text = notesList?.selectedNote?.text ?? ""
+        chooseRightBarButton()
         setupTextView()
     }
     
@@ -65,11 +63,12 @@ class CreateNoteViewController: UIViewController {
         if notesList.mode! == .create {
             let text = textView.text!
             let note = Note(text: text, date: Date(), insertInto: notesList.managedContext)
-            do {
-                try notesList.managedContext.save()
-            } catch let error as NSError {
-                print("Could not save. \(error), \(error.userInfo)")
-            }
+            notesList.saveManagedContext()
+//            do {
+//                try notesList.managedContext.save()
+//            } catch let error as NSError {
+//                print("Could not save. \(error), \(error.userInfo)")
+//            }
             delegate?.createNoteViewController(self, didFinishAdding: note)
         }
     }
@@ -82,6 +81,8 @@ class CreateNoteViewController: UIViewController {
     }
     
     private func setupTextView() {
+        textView.contentInset = UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
+        textView.text = notesList?.selectedNote?.text ?? ""
         if notesList.mode! == .share {
             textView.isEditable = false
             textView.resignFirstResponder()
