@@ -63,7 +63,6 @@ class CreateNoteViewController: UIViewController {
         if notesList.mode! == .create {
             let text = textView.text!
             let note = Note(text: text, date: Date(), insertInto: notesList.managedContext)
-            notesList.saveManagedContext()
 //            do {
 //                try notesList.managedContext.save()
 //            } catch let error as NSError {
@@ -77,7 +76,7 @@ class CreateNoteViewController: UIViewController {
     private func editNote() {
         notesList.selectedNote?.text = textView.text
         notesList.selectedNote?.date = Date()
-        notesList.saveManagedContext()
+//        notesList.saveManagedContext()
     }
     
     private func setupTextView() {

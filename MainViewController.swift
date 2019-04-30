@@ -17,31 +17,14 @@ class MainViewController: UITableViewController {
     var fetchLimit = 10
     var fetchOffset = 0
     
-    fileprivate lazy var activityIndicatorView: UIActivityIndicatorView = {
-        let activityIndicatorView = UIActivityIndicatorView(style: .whiteLarge)
-        activityIndicatorView.hidesWhenStopped = true
-        activityIndicatorView.color = UIColor.red
-        
-        // Set Center
-        var center = self.view.center
-        if let navigationBarFrame = self.navigationController?.navigationBar.frame {
-            center.y -= (navigationBarFrame.origin.y + navigationBarFrame.size.height)
-        }
-        activityIndicatorView.center = center
-        
-        self.view.addSubview(activityIndicatorView)
-        return activityIndicatorView
-    }()
-    
     //MARK: - Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         notesList.numberOfItemsPerPage = 20
         (tableView as! PagingTableView).pagingDelegate = self
 //                deleteAllRecords()
-//        createDummyNotes(with: 60)
+//        createDummyNotes(with: 55)
         
-//        notesList.notes = getNotesFromDB(notesList.notes.count)
 //        notesList.updateNotesList()
         //SearchBar setup
         searchBarSetup()
@@ -52,10 +35,9 @@ class MainViewController: UITableViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-//        notesList = getNotesFromDB(notesList.count) as! [Note]
-//        print("\n notesList.notes.count in viewWillAppear: \(notesList.notes.count)")
 
     }
+    
     //MARK: SEGUES
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "DetailNoteSegue" { //Fire wher user tap a row
@@ -84,12 +66,11 @@ class MainViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print("\n test: numberOfRowsInSection \n")
-
         if isFiltering() {
             return notesList.filteredNotes.count
         }
 //        print("\n numberOfRowsInSection notesList.count is \(notesList.notes.count)")
+        print("\n test: numberOfRowsInSection is \(notesList.notes.count) \n")
         return notesList.notes.count
     }
 
@@ -166,7 +147,7 @@ class MainViewController: UITableViewController {
             notesList.managedContext.delete(note)
             notesList.notes.remove(at: indexPath.row)
         }
-        notesList.saveManagedContext()
+//        notesList.saveManagedContext()
     }
     
     private func getNote(at indexPath: IndexPath, when isFilteting: Bool) -> Note {
@@ -257,7 +238,6 @@ class MainViewController: UITableViewController {
     
     private func saveNote(with text: String) {
         let note = Note(text: text, date: Date(), insertInto: notesList.managedContext)
-        notesList.saveManagedContext()
         notesList.notes.append(note)
     }
 }
@@ -265,11 +245,18 @@ class MainViewController: UITableViewController {
 //MARK: - CreateNoteViewControllerDelegate
 extension MainViewController: CreateNoteViewControllerDelegate {
     func createNoteViewController(_ controller: CreateNoteViewController, didFinishAdding note: Note) {
-        notesList.notes.append(note)
-//        print("\n notesList.count in didFinishAdding: \(notesList.count)")
-
-        tableView.reloadData()
+//        notesList.notes.append(note)
+        notesList.notes.insert(note, at: 0)
+        print("notesList.notes.count is \(notesList.notes.count)")
+////        print("\n notesList.count in didFinishAdding: \(notesList.count)")
+//        let indexPath = IndexPath(row: notesList.notes.count - 1, section: 0)
+        let indexPath = IndexPath(row: 0, section: 0)
+//        tableView.reloadData()
+//        (tableView as! PagingTableView).reset()
         navigationController?.popViewController(animated: true)
+        tableView.insertRows(at: [indexPath], with: .automatic)
+        tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+//        tableView.scrollToBottomRow()
     }
     
     func createNoteViewController(_ controller: CreateNoteViewController, didFinishEditing editedNote: Note) {
@@ -282,16 +269,20 @@ extension MainViewController: CreateNoteViewControllerDelegate {
 extension MainViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         filterContentForSearchText(searchController.searchBar.text!)
+        navigationItem.rightBarButtonItem?.isEnabled = !searchController.searchBar.isFirstResponder
     }
 }
 
 //MARK: - PagingTableViewDelegate
 extension MainViewController: PagingTableViewDelegate {
     func paginate(_ tableView: PagingTableView, to page: Int) {
-        tableView.isLoading = true
-        notesList.loadNotes(at: page) { (notes) in
-            self.notesList.notes.append(contentsOf: notes)
-            (self.tableView as! PagingTableView).isLoading = false
+        if notesList.flag {
+            tableView.isLoading = true
+            notesList.loadNotes(at: page) { (notes) in
+                self.notesList.notes.append(contentsOf: notes)
+                (self.tableView as! PagingTableView).isLoading = false
+            }
         }
+
     }
 }

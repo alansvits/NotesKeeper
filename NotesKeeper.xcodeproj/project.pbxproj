@@ -11,6 +11,7 @@
 		6407BC3322758933000D343E /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6407BC3222758933000D343E /* UIColor+Extension.swift */; };
 		6411691122770DD200CECFD1 /* SpinnerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6411691022770DD200CECFD1 /* SpinnerViewController.swift */; };
 		641169132277244D00CECFD1 /* PagingTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641169122277244D00CECFD1 /* PagingTableView.swift */; };
+		64116915227824C500CECFD1 /* UITableView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64116914227824C500CECFD1 /* UITableView+Extension.swift */; };
 		641EE58A2272266B00C3606B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641EE5892272266B00C3606B /* AppDelegate.swift */; };
 		641EE58F2272266B00C3606B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 641EE58D2272266B00C3606B /* Main.storyboard */; };
 		641EE5912272266C00C3606B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 641EE5902272266C00C3606B /* Assets.xcassets */; };
@@ -28,6 +29,7 @@
 		6407BC3222758933000D343E /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 		6411691022770DD200CECFD1 /* SpinnerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinnerViewController.swift; sourceTree = "<group>"; };
 		641169122277244D00CECFD1 /* PagingTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PagingTableView.swift; sourceTree = "<group>"; };
+		64116914227824C500CECFD1 /* UITableView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Extension.swift"; sourceTree = "<group>"; };
 		641EE5862272266B00C3606B /* NotesKeeper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NotesKeeper.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		641EE5892272266B00C3606B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		641EE58E2272266B00C3606B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -57,6 +59,7 @@
 			isa = PBXGroup;
 			children = (
 				6407BC3222758933000D343E /* UIColor+Extension.swift */,
+				64116914227824C500CECFD1 /* UITableView+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -213,6 +216,7 @@
 				641EE59E2272C11C00C3606B /* NoteTableViewCell.swift in Sources */,
 				64FAB67C22730072000CEADA /* NotesList.swift in Sources */,
 				6407BC3322758933000D343E /* UIColor+Extension.swift in Sources */,
+				64116915227824C500CECFD1 /* UITableView+Extension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
