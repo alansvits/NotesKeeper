@@ -23,19 +23,13 @@ class MainViewController: UITableViewController {
         notesList.numberOfItemsPerPage = 20
         (tableView as! PagingTableView).pagingDelegate = self
 //                deleteAllRecords()
-//        createDummyNotes(with: 55)
+//        createDummyNotes(with: 40)
         
 //        notesList.updateNotesList()
         //SearchBar setup
         searchBarSetup()
-//        activityIndicatorView.startAnimating()
-//        createSpinnerView()
+
         
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
     }
     
     //MARK: SEGUES
@@ -61,7 +55,6 @@ class MainViewController: UITableViewController {
 
     // MARK: - Table view methods
     override func numberOfSections(in tableView: UITableView) -> Int {
-        print("\n test: numberOfSections \n")
         return 1
     }
 
@@ -69,20 +62,15 @@ class MainViewController: UITableViewController {
         if isFiltering() {
             return notesList.filteredNotes.count
         }
-//        print("\n numberOfRowsInSection notesList.count is \(notesList.notes.count)")
-        print("\n test: numberOfRowsInSection is \(notesList.notes.count) \n")
         return notesList.notes.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        print("\n test: cellForRowAt \(indexPath.row)\n")
-
         let cell = tableView.dequeueReusableCell(withIdentifier: "NoteItem", for: indexPath) as! NoteTableViewCell
         let note: Note
         if isFiltering() {
             note = notesList.filteredNotes[indexPath.row]
         } else {
-//            print("\n cellForRowAt notesList.count is \(notesList.notes.count)")
             note = notesList.notes[indexPath.row]
         }
         cell.noteLabel.text = note.text
@@ -94,23 +82,11 @@ class MainViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         notesList.selectedNote = getNote(at: indexPath, when: isFiltering())
-//        notesList.selectedNoteIndexPath = indexPath
         return indexPath
     }
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        print("\n test: willDisplay cell \(indexPath.row)\n")
-
-//        print("\n notesList.notes.count :\(notesList.notes.count), and row is \(indexPath.row)")
-//
-//        if indexPath.row == notesList.notes.count - 1 {
-//            let newPart = getNotesFromDB(notesList.notes.count)
-//            if newPart.count > 0 {
-//                notesList.notes += newPart
-////            self.perform(#selector(reloadTable), with: nil, afterDelay: 1.0)
-////                tableView.reloadData()
-//            }
-//        }
+        
     }
     
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
@@ -147,7 +123,7 @@ class MainViewController: UITableViewController {
             notesList.managedContext.delete(note)
             notesList.notes.remove(at: indexPath.row)
         }
-//        notesList.saveManagedContext()
+        notesList.saveContext()
     }
     
     private func getNote(at indexPath: IndexPath, when isFilteting: Bool) -> Note {
@@ -159,12 +135,27 @@ class MainViewController: UITableViewController {
         }
         return note
     }
+    
     //MARK: Searching helper methods
     private func searchBarIsEmpty() -> Bool {
         return searchController.searchBar.text?.isEmpty ?? true
     }
     
     private func filterContentForSearchText(_ searchText: String, scope: String = "All") {
+//        var searchTest = searchText.lowercased()
+        if notesList.flag {
+            var fetchedNotes = [Note]()
+            let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Note")
+            let sortDescriptor = NSSortDescriptor(key: "date", ascending: false)
+            fetchRequest.sortDescriptors = [sortDescriptor]
+            notesList.flag = false
+            do {
+                fetchedNotes = try notesList.managedContext.fetch(fetchRequest) as! [Note]
+            } catch let error as NSError {
+                print("Could not fetch. \(error), \(error.userInfo)")
+            }
+            notesList.notes = fetchedNotes
+        }
         notesList.filteredNotes = (notesList.notes).filter({ (note) -> Bool in
             return (note.text?.lowercased().contains(searchText.lowercased()))!
         })
@@ -178,7 +169,6 @@ class MainViewController: UITableViewController {
     //TODO: - Need finishing
     private func getNotesFromDB(_ fetchOffSet: Int) -> [Note] {
         var notes = [Note]()
-        //        var context: NSManagedObjectContext? = self.getManagedObjectContext()
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Note")
         fetchRequest.fetchLimit = fetchLimit
         fetchRequest.fetchOffset = fetchOffSet
@@ -188,37 +178,8 @@ class MainViewController: UITableViewController {
             print("Could not fetch. \(error), \(error.userInfo)")
         }
         return notes
-//        let entityDesc = NSEntityDescription.entity(forEntityName: "Note", in: self.managedContext)
-//        fetchRequest.entity = entityDesc
-//        var fetchedOjects = try? self.managedContext.fetch(fetchRequest)
-//        for i in 0..<fetchedOjects!.count {
-//            let note: Note = fetchedOjects![i] as! Note
-//            record.append(note)
-//        }
-//        return record
     }
     
-    func createSpinnerView() {
-        let child = SpinnerViewController()
-        
-        // add the spinner view controller
-        addChild(child)
-        child.view.frame = view.frame
-        view.addSubview(child.view)
-        child.didMove(toParent: self)
-        
-        // wait two seconds to simulate some work happening
-        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
-            // then remove the spinner view controller
-            child.willMove(toParent: nil)
-            child.view.removeFromSuperview()
-            child.removeFromParent()
-        }
-    }
-    
-    @objc private func reloadTable() {
-        tableView.reloadData()
-    }
     //MARK: - For testing purpose
     private func deleteAllRecords() {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Note")
@@ -238,25 +199,19 @@ class MainViewController: UITableViewController {
     
     private func saveNote(with text: String) {
         let note = Note(text: text, date: Date(), insertInto: notesList.managedContext)
-        notesList.notes.append(note)
+//        notesList.notes.append(note)
+        notesList.saveContext()
     }
 }
 
 //MARK: - CreateNoteViewControllerDelegate
 extension MainViewController: CreateNoteViewControllerDelegate {
     func createNoteViewController(_ controller: CreateNoteViewController, didFinishAdding note: Note) {
-//        notesList.notes.append(note)
         notesList.notes.insert(note, at: 0)
-        print("notesList.notes.count is \(notesList.notes.count)")
-////        print("\n notesList.count in didFinishAdding: \(notesList.count)")
-//        let indexPath = IndexPath(row: notesList.notes.count - 1, section: 0)
         let indexPath = IndexPath(row: 0, section: 0)
-//        tableView.reloadData()
-//        (tableView as! PagingTableView).reset()
         navigationController?.popViewController(animated: true)
         tableView.insertRows(at: [indexPath], with: .automatic)
         tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
-//        tableView.scrollToBottomRow()
     }
     
     func createNoteViewController(_ controller: CreateNoteViewController, didFinishEditing editedNote: Note) {

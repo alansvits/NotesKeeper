@@ -54,7 +54,6 @@ class CreateNoteViewController: UIViewController {
                 editNote()
                 delegate?.createNoteViewController(self, didFinishEditing: note)
                 self.notesList.selectedNote = nil
-//                print("\n\nif editMode && !createMode: \(note.objectID)\n\n")
             }
         }
     }
@@ -63,11 +62,7 @@ class CreateNoteViewController: UIViewController {
         if notesList.mode! == .create {
             let text = textView.text!
             let note = Note(text: text, date: Date(), insertInto: notesList.managedContext)
-//            do {
-//                try notesList.managedContext.save()
-//            } catch let error as NSError {
-//                print("Could not save. \(error), \(error.userInfo)")
-//            }
+            notesList.saveContext()
             delegate?.createNoteViewController(self, didFinishAdding: note)
         }
     }
@@ -76,6 +71,7 @@ class CreateNoteViewController: UIViewController {
     private func editNote() {
         notesList.selectedNote?.text = textView.text
         notesList.selectedNote?.date = Date()
+        notesList.saveContext()
 //        notesList.saveManagedContext()
     }
     
