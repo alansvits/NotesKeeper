@@ -198,8 +198,7 @@ class MainViewController: UITableViewController {
     }
     
     private func saveNote(with text: String) {
-        let note = Note(text: text, date: Date(), insertInto: notesList.managedContext)
-//        notesList.notes.append(note)
+        let _ = Note(text: text, date: Date(), insertInto: notesList.managedContext)
         notesList.saveContext()
     }
 }

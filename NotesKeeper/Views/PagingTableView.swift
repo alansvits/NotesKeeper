@@ -76,13 +76,13 @@ open class PagingTableView: UITableView {
     
     private func centerIndicator() {
         let xCenterConstraint = NSLayoutConstraint(
-            item: loadingView, attribute: .centerX, relatedBy: .equal,
+            item: loadingView!, attribute: .centerX, relatedBy: .equal,
             toItem: indicator, attribute: .centerX, multiplier: 1, constant: 0
         )
         loadingView.addConstraint(xCenterConstraint)
         
         let yCenterConstraint = NSLayoutConstraint(
-            item: loadingView, attribute: .centerY, relatedBy: .equal,
+            item: loadingView!, attribute: .centerY, relatedBy: .equal,
             toItem: indicator, attribute: .centerY, multiplier: 1, constant: 0
         )
         loadingView.addConstraint(yCenterConstraint)
