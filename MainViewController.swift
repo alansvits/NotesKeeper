@@ -21,7 +21,7 @@ class MainViewController: UITableViewController {
         super.viewDidLoad()
         notesList.numberOfItemsPerPage = 20
         (tableView as! PagingTableView).pagingDelegate = self
-        //                deleteAllRecords()
+//                        deleteAllRecords()
         //        createDummyNotes(with: 40)
         
         //SearchBar setup
@@ -173,12 +173,12 @@ class MainViewController: UITableViewController {
     }
     
     private func filterContentForSearchText(_ searchText: String, scope: String = "All") {
-        if notesList.isUpdated {
+        if !notesList.isUpdated {
             var fetchedNotes = [Note]()
             let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Note")
             let sortDescriptor = NSSortDescriptor(key: "date", ascending: false)
             fetchRequest.sortDescriptors = [sortDescriptor]
-            notesList.isUpdated = false
+            notesList.isUpdated = true
             do {
                 fetchedNotes = try notesList.managedContext.fetch(fetchRequest) as! [Note]
             } catch let error as NSError {
@@ -246,7 +246,7 @@ extension MainViewController: UISearchResultsUpdating {
 //MARK: - PagingTableViewDelegate
 extension MainViewController: PagingTableViewDelegate {
     func paginate(_ tableView: PagingTableView, to page: Int) {
-        if notesList.isUpdated {
+        if !notesList.isUpdated {
             tableView.isLoading = true
             notesList.loadNotes(at: page) { (notes) in
                 self.notesList.notes.append(contentsOf: notes)
