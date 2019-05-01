@@ -32,8 +32,45 @@ class CreateNoteViewController: UIViewController {
         shareButton = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareButtonPressed(_:)))
         editButton = UIBarButtonItem(title: "Редактировать", style: .plain, target: self, action: #selector(editButtonPressed(_:)))
         
+        let backButton = UIBarButtonItem(title: "Назад", style: .plain, target: self, action: #selector(backBarButtonPressed(_:)))
+        
+        if notesList.mode! == .create || notesList.mode! == .edit {
+            navigationItem.leftBarButtonItem = backButton
+        }
+
         chooseRightBarButton()
         setupTextView()
+    }
+    
+    @objc func backBarButtonPressed(_ sender: Any) {
+        if notesList.mode! == .create && textView.text != "" {
+            let action = UIAlertController(title: "Сохранить новую заметку?", message: nil, preferredStyle: .alert)
+            let alertActionYes = UIAlertAction(title: "Да", style: .default) { (action) in
+                self.saveNoteButtonPressed(nil)
+            }
+            let alertActionNo = UIAlertAction(title: "Нет", style: .destructive) { (action) in
+                self.navigationController?.popViewController(animated: true)
+            }
+            action.addAction(alertActionYes)
+            action.addAction(alertActionNo)
+            self.present(action, animated: true, completion: nil)
+        } else if notesList.mode! == .edit {
+            print("notesList.mode! == .edit ")
+            let action = UIAlertController(title: "Сохранить изменения?", message: nil, preferredStyle: .alert)
+            let alertActionYes = UIAlertAction(title: "Да", style: .default) { (action) in
+                self.editButtonPressed(nil)
+            }
+            let alertActionNo = UIAlertAction(title: "Нет", style: .destructive) { (action) in
+                self.navigationController?.popViewController(animated: true)
+            }
+            action.addAction(alertActionYes)
+            action.addAction(alertActionNo)
+            self.present(action, animated: true, completion: nil)
+        } else {
+            print("notesList else")
+            self.navigationController?.popViewController(animated: true)
+        }
+
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -47,7 +84,7 @@ class CreateNoteViewController: UIViewController {
         present(activityViewController, animated: true, completion: {})
     }
     
-    @objc func editButtonPressed(_ sender: Any) {
+    @objc func editButtonPressed(_ sender: Any?) {
         if notesList.mode! == .edit  {
             if let note = notesList.selectedNote {
                 editNote()
@@ -57,7 +94,7 @@ class CreateNoteViewController: UIViewController {
         }
     }
     
-    @objc func saveNoteButtonPressed(_ sender: Any) {
+    @objc func saveNoteButtonPressed(_ sender: Any?) {
         if notesList.mode! == .create {
             let text = textView.text!
             let note = Note(text: text, date: Date(), insertInto: notesList.managedContext)
