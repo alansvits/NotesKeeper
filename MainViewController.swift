@@ -20,18 +20,14 @@ class MainViewController: UITableViewController {
     //MARK: - Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        notesList.numberOfItemsPerPage = 20
         
         (tableView as! PagingTableView).pagingDelegate = self
         searchBarSetup()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         tableView.reloadData()
-
-        print("notesList.notes.count viewWillAppear is \(notesList.notes.count)")
-
     }
     
     @IBAction func sortBarButtonPressed(_ sender: Any) {
@@ -112,14 +108,12 @@ class MainViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        print("notesList.notes.count cellForRowAt is \(notesList.notes.count)")
-        print("notesList.isUpdated cellForRowAt is \(notesList.isUpdated)")
-
         let cell = tableView.dequeueReusableCell(withIdentifier: "NoteItem", for: indexPath) as! NoteTableViewCell
         let note: Note
         if isFiltering() {
             note = notesList.filteredNotes[indexPath.row]
         } else {
+            print("notesList.notes.count cellForRowAt is \(notesList.notes.count)")
             note = notesList.notes[indexPath.row]
         }
         cell.noteLabel.text = note.text
@@ -221,7 +215,7 @@ extension MainViewController: CreateNoteViewControllerDelegate {
         let indexPath = IndexPath(row: 0, section: 0)
         navigationController?.popViewController(animated: true)
         tableView.insertRows(at: [indexPath], with: .automatic)
-        tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+        tableView.scrollToRow(at: indexPath, at: .top, animated: true)
     }
     
     func createNoteViewController(_ controller: CreateNoteViewController, didFinishEditing editedNote: Note) {
@@ -244,19 +238,12 @@ extension MainViewController: UISearchResultsUpdating {
 //MARK: - PagingTableViewDelegate
 extension MainViewController: PagingTableViewDelegate {
     func paginate(_ tableView: PagingTableView, to page: Int) {
-        print("notesList.notes.count paginate is \(self.notesList.notes.count)")
-            print("notesList.isUpdated  paginate1 is \(self.notesList.isUpdated)")
         if !notesList.isUpdated {
             tableView.isLoading = true
-            print("notesList.isUpdated  paginate2 is \(self.notesList.isUpdated)")
-            print("NotesList.delay PagingTableView is \(NotesList.delay)")
-
             notesList.loadNotes(at: page) { (notes) in
                 self.notesList.notes.append(contentsOf: notes)
                 tableView.isLoading = false
             }
-            print("notesList.isUpdated  paginate3 is \(self.notesList.isUpdated)")
-
         }
 
     }
@@ -265,10 +252,6 @@ extension MainViewController: PagingTableViewDelegate {
 extension MainViewController: SettingsViewControllerDelegate {
     func settingsViewController(_ controller: SettingsViewController, didFinishSetting noteList: NotesList) {
         self.notesList = noteList
-//        tableView.reloadData()
-        print("notesList.notes.count didFinishSetting is \(self.notesList.notes.count)")
-        print("notesList.isUpdated didFinishSetting is \(self.notesList.isUpdated)")
-
         self.notesList.isUpdated = false
         (tableView as! PagingTableView).reset()
         navigationController?.popViewController(animated: true)

@@ -20,9 +20,6 @@ class NotesList {
     var numberOfItemsPerPage = 20
     var mode: Mode?
     var isUpdated = false
-    static var delay: Int?
-    private var dispatchTime = DispatchTime.now() + DispatchTimeInterval.seconds(NotesList.delay ?? 0)
-
     
     init(with managedObjectContext: NSManagedObjectContext) {
         self.managedContext = managedObjectContext
@@ -39,9 +36,8 @@ class NotesList {
     }
 
     func loadNotes(at page: Int, onComplete: @escaping ([Note]) -> Void) {
-        print("NotesList.delay  dispatchTime onComplete is \(dispatchTime)")
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + DispatchTimeInterval.seconds(DELAY ?? 0)) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + DispatchTimeInterval.seconds(DELAY)) {
             var fetchNote = [Note]()
             let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Note")
             fetchRequest.fetchOffset = self.numberOfItemsPerPage * page

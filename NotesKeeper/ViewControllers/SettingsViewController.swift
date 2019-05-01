@@ -47,23 +47,7 @@ class SettingsViewController: UITableViewController {
         
         if let delayStr = delayWhilePaginating.text, let delay = Int(delayStr) {
             DELAY = delay
-            print("NotesList.delay is \(NotesList.delay)")
         }
-        
-        var fetchNote = [Note]()
-        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Note")
-        fetchRequest.fetchOffset = 0
-        fetchRequest.fetchLimit = notesList.numberOfItemsPerPage
-        let sortDescriptor = NSSortDescriptor(key: "date", ascending: false)
-        fetchRequest.sortDescriptors = [sortDescriptor]
-        do {
-            fetchNote = try notesList.managedContext.fetch(fetchRequest) as! [Note]
-        } catch let error as NSError {
-            print("Could not fetch. \(error), \(error.userInfo)")
-        }
-        
-//        notesList.notes.append(contentsOf: fetchNote)
-        print("notesList.notes.count acceptSettings is \(notesList.notes.count)")
         notesList.isUpdated = false
         delegate?.settingsViewController(self, didFinishSetting: self.notesList)
     }
@@ -72,8 +56,6 @@ class SettingsViewController: UITableViewController {
         let alertVC = UIAlertController(title: "Удаление удалось", message: nil, preferredStyle: .alert)
         let alertAction = UIAlertAction(title: "OK", style: .default) { (action) in
             self.notesList.notes.removeAll()
-            print("notesList.notes.count deleteAllData alertAction is \(self.notesList.notes.count)")
-
             }
         alertVC.addAction(alertAction)
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Note")
@@ -84,9 +66,7 @@ class SettingsViewController: UITableViewController {
         } catch let error as NSError {
             print("Could not delete all data. \(error), \(error.userInfo)")
         }
-        print("notesList.notes.count deleteAllData is \(notesList.notes.count)")
         notesList.notes.removeAll()
-
     }
     
     private func createDummyNotes(with numberOfItems: Int) {
