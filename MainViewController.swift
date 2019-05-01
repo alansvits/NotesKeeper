@@ -22,7 +22,7 @@ class MainViewController: UITableViewController {
         notesList.numberOfItemsPerPage = 20
         (tableView as! PagingTableView).pagingDelegate = self
 //                        deleteAllRecords()
-        //        createDummyNotes(with: 40)
+                createDummyNotes(with: 40)
         
         //SearchBar setup
         searchBarSetup()
