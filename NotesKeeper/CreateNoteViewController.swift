@@ -2,7 +2,7 @@
 //  CreateNoteViewController.swift
 //  NotesKeeper
 //
-//  Created by Stas Shetko on 4/04/19.
+//  Created by Stas Shetko on 26/04/19.
 //  Copyright © 2019 Stas Shetko. All rights reserved.
 //
 
@@ -23,7 +23,6 @@ class CreateNoteViewController: UIViewController {
     var shareButton: UIBarButtonItem?
     var editButton: UIBarButtonItem!
     var notesList: Noteslist!
-//    var managedContext: NSManagedObjectContext!
     
     //MARK: - METHODS
     override func viewDidLoad() {
@@ -72,7 +71,6 @@ class CreateNoteViewController: UIViewController {
         notesList.selectedNote?.text = textView.text
         notesList.selectedNote?.date = Date()
         notesList.saveContext()
-//        notesList.saveManagedContext()
     }
     
     private func setupTextView() {

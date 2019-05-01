@@ -1,4 +1,3 @@
-//Source https://github.com/mu29/PagingTableView/blob/master/Sources/PagingTableViewDelegate.swift
 import UIKit
 
 @objc public protocol PagingTableViewDelegate {
@@ -7,8 +6,6 @@ import UIKit
     func paginate(_ tableView: PagingTableView, to page: Int)
     
 }
-
-//Source https://github.com/mu29/PagingTableView/blob/master/Sources/PagingTableView.swift
 
 open class PagingTableView: UITableView {
     

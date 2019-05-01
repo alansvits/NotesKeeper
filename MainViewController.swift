@@ -11,25 +11,60 @@ import CoreData
 
 class MainViewController: UITableViewController {
     
+    @IBOutlet weak var sortBarButton: UIBarButtonItem!
     var managedContext: NSManagedObjectContext!
     var notesList: Noteslist!
     let searchController = UISearchController(searchResultsController: nil)
-    var fetchLimit = 10
-    var fetchOffset = 0
     
     //MARK: - Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         notesList.numberOfItemsPerPage = 20
         (tableView as! PagingTableView).pagingDelegate = self
-//                deleteAllRecords()
-//        createDummyNotes(with: 40)
+        //                deleteAllRecords()
+        //        createDummyNotes(with: 40)
         
-//        notesList.updateNotesList()
         //SearchBar setup
         searchBarSetup()
+    }
+    
+    @IBAction func sortBarButtonPressed(_ sender: Any) {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
+        let descendingSortAction = UIAlertAction(title: "От новых к старым", style: .default) { (action) in
+            if self.isFiltering() {
+                self.notesList.filteredNotes.sort(by: { $0.date! > $1.date! })
+            } else {
+                self.notesList.notes.sort(by: { $0.date! > $1.date! })
+            }
+            self.sortBarButton.image = UIImage(imageLiteralResourceName: "sorting-descending")
+            self.tableView.reloadData()
+        }
         
+        let ascendingSortAction = UIAlertAction(title: "От старых к новым", style: .default) { (action) in
+            if self.isFiltering() {
+                self.notesList.filteredNotes.sort(by: { $0.date! < $1.date! })
+            } else {
+                self.notesList.notes.sort(by: { $0.date! < $1.date! })
+            }
+            self.sortBarButton.image = UIImage(imageLiteralResourceName: "sorting-ascending")
+            self.tableView.reloadData()
+        }
+        let alphabeticalSortAction = UIAlertAction(title: "По алфавиту", style: .default) { (action) in
+            if self.isFiltering() {
+                self.notesList.filteredNotes.sort(by: { $0.text!.lowercased() < $1.text!.lowercased()})
+            } else {
+                self.notesList.notes.sort(by: { $0.text!.lowercased() < $1.text!.lowercased()})
+            }
+            self.sortBarButton.image = UIImage(imageLiteralResourceName: "sorting-alphabetically")
+            self.tableView.reloadData()
+        }
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        actionSheet.addAction(descendingSortAction)
+        actionSheet.addAction(ascendingSortAction)
+        actionSheet.addAction(alphabeticalSortAction)
+        actionSheet.addAction(cancelAction)
+        self.present(actionSheet, animated: true, completion: nil)
     }
     
     //MARK: SEGUES
@@ -84,11 +119,7 @@ class MainViewController: UITableViewController {
         notesList.selectedNote = getNote(at: indexPath, when: isFiltering())
         return indexPath
     }
-    
-    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        
-    }
-    
+
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         let editAction = UITableViewRowAction(style: .normal, title: "Edit") { (rowAction, indexPath) in
             self.notesList.selectedNote = self.getNote(at: indexPath, when: self.isFiltering())
@@ -142,13 +173,12 @@ class MainViewController: UITableViewController {
     }
     
     private func filterContentForSearchText(_ searchText: String, scope: String = "All") {
-//        var searchTest = searchText.lowercased()
-        if notesList.flag {
+        if notesList.isUpdated {
             var fetchedNotes = [Note]()
             let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Note")
             let sortDescriptor = NSSortDescriptor(key: "date", ascending: false)
             fetchRequest.sortDescriptors = [sortDescriptor]
-            notesList.flag = false
+            notesList.isUpdated = false
             do {
                 fetchedNotes = try notesList.managedContext.fetch(fetchRequest) as! [Note]
             } catch let error as NSError {
@@ -164,20 +194,6 @@ class MainViewController: UITableViewController {
     
     private func isFiltering() -> Bool {
         return searchController.isActive && !searchBarIsEmpty()
-    }
-    
-    //TODO: - Need finishing
-    private func getNotesFromDB(_ fetchOffSet: Int) -> [Note] {
-        var notes = [Note]()
-        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Note")
-        fetchRequest.fetchLimit = fetchLimit
-        fetchRequest.fetchOffset = fetchOffSet
-        do {
-            notes = try self.notesList.managedContext.fetch(fetchRequest) as! [Note]
-        } catch let error as NSError {
-            print("Could not fetch. \(error), \(error.userInfo)")
-        }
-        return notes
     }
     
     //MARK: - For testing purpose
@@ -230,7 +246,7 @@ extension MainViewController: UISearchResultsUpdating {
 //MARK: - PagingTableViewDelegate
 extension MainViewController: PagingTableViewDelegate {
     func paginate(_ tableView: PagingTableView, to page: Int) {
-        if notesList.flag {
+        if notesList.isUpdated {
             tableView.isLoading = true
             notesList.loadNotes(at: page) { (notes) in
                 self.notesList.notes.append(contentsOf: notes)
