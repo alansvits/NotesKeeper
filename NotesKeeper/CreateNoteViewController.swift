@@ -22,7 +22,7 @@ class CreateNoteViewController: UIViewController {
     var saveButton: UIBarButtonItem!
     var shareButton: UIBarButtonItem?
     var editButton: UIBarButtonItem!
-    var notesList: Noteslist!
+    var notesList: NotesList!
     
     //MARK: - METHODS
     override func viewDidLoad() {

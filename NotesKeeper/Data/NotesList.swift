@@ -12,7 +12,7 @@ import CoreData
 enum Mode {
     case create, edit, share
 }
-class Noteslist {
+class NotesList {
     var notes = [Note]()
     var filteredNotes = [Note]()
     var selectedNote: Note?
