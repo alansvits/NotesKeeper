@@ -12,6 +12,7 @@ import CoreData
 class MainViewController: UITableViewController {
     
     @IBOutlet weak var sortBarButton: UIBarButtonItem!
+    @IBOutlet weak var clickMeBarButton: UIBarButtonItem!
     var managedContext: NSManagedObjectContext!
     var notesList: NotesList!
     let searchController = UISearchController(searchResultsController: nil)
@@ -20,12 +21,17 @@ class MainViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         notesList.numberOfItemsPerPage = 20
+        
         (tableView as! PagingTableView).pagingDelegate = self
-//                        deleteAllRecords()
-//                createDummyNotes(with: 40)
-
-//        self.edgesForExtendedLayout = []
         searchBarSetup()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tableView.reloadData()
+
+        print("notesList.notes.count viewWillAppear is \(notesList.notes.count)")
+
     }
     
     @IBAction func sortBarButtonPressed(_ sender: Any) {
@@ -86,6 +92,11 @@ class MainViewController: UITableViewController {
             controller.notesList = notesList
             controller.delegate = self
         }
+        if segue.identifier == "testingSettingsSegue" {
+            let controller = segue.destination as! SettingsViewController
+            controller.notesList = notesList
+            controller.delegate = self
+        }
     }
 
     // MARK: - Table view methods
@@ -101,6 +112,9 @@ class MainViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        print("notesList.notes.count cellForRowAt is \(notesList.notes.count)")
+        print("notesList.isUpdated cellForRowAt is \(notesList.isUpdated)")
+
         let cell = tableView.dequeueReusableCell(withIdentifier: "NoteItem", for: indexPath) as! NoteTableViewCell
         let note: Note
         if isFiltering() {
@@ -198,28 +212,6 @@ class MainViewController: UITableViewController {
     private func isFiltering() -> Bool {
         return searchController.isActive && !searchBarIsEmpty()
     }
-    
-    //MARK: - For testing purpose
-    private func deleteAllRecords() {
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Note")
-        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-        do {
-            try self.notesList.managedContext.execute(deleteRequest)
-        } catch let error as NSError {
-            print("Could not delete all data. \(error), \(error.userInfo)")
-        }
-    }
-    
-    private func createDummyNotes(with numberOfItems: Int) {
-        for item in 1...numberOfItems {
-            saveNote(with: String(item))
-        }
-    }
-    
-    private func saveNote(with text: String) {
-        let _ = Note(text: text, date: Date(), insertInto: notesList.managedContext)
-        notesList.saveContext()
-    }
 }
 
 //MARK: - CreateNoteViewControllerDelegate
@@ -242,20 +234,43 @@ extension MainViewController: CreateNoteViewControllerDelegate {
 extension MainViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         filterContentForSearchText(searchController.searchBar.text!)
+        
+        //Disable ClickME and Create buttons
         navigationItem.rightBarButtonItem?.isEnabled = !searchController.searchBar.isFirstResponder
+        navigationItem.leftBarButtonItem?.isEnabled = !searchController.searchBar.isFirstResponder
     }
 }
 
 //MARK: - PagingTableViewDelegate
 extension MainViewController: PagingTableViewDelegate {
     func paginate(_ tableView: PagingTableView, to page: Int) {
+        print("notesList.notes.count paginate is \(self.notesList.notes.count)")
+            print("notesList.isUpdated  paginate1 is \(self.notesList.isUpdated)")
         if !notesList.isUpdated {
             tableView.isLoading = true
+            print("notesList.isUpdated  paginate2 is \(self.notesList.isUpdated)")
+            print("NotesList.delay PagingTableView is \(NotesList.delay)")
+
             notesList.loadNotes(at: page) { (notes) in
                 self.notesList.notes.append(contentsOf: notes)
-                (self.tableView as! PagingTableView).isLoading = false
+                tableView.isLoading = false
             }
+            print("notesList.isUpdated  paginate3 is \(self.notesList.isUpdated)")
+
         }
 
+    }
+}
+
+extension MainViewController: SettingsViewControllerDelegate {
+    func settingsViewController(_ controller: SettingsViewController, didFinishSetting noteList: NotesList) {
+        self.notesList = noteList
+//        tableView.reloadData()
+        print("notesList.notes.count didFinishSetting is \(self.notesList.notes.count)")
+        print("notesList.isUpdated didFinishSetting is \(self.notesList.isUpdated)")
+
+        self.notesList.isUpdated = false
+        (tableView as! PagingTableView).reset()
+        navigationController?.popViewController(animated: true)
     }
 }

@@ -20,6 +20,7 @@
 		64BDC19122733D5F00F0A8D5 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64BDC19022733D5F00F0A8D5 /* CoreDataStack.swift */; };
 		64BDC194227342C300F0A8D5 /* NotesKepper.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 64BDC192227342C300F0A8D5 /* NotesKepper.xcdatamodeld */; };
 		64F9B04E227999F800ED7ADC /* NotesList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64F9B04D227999F800ED7ADC /* NotesList.swift */; };
+		64FEE05A2279D79B00A73A94 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64FEE0592279D79B00A73A94 /* SettingsViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +39,7 @@
 		64BDC19022733D5F00F0A8D5 /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		64BDC193227342C300F0A8D5 /* NotesKepper.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = NotesKepper.xcdatamodel; sourceTree = "<group>"; };
 		64F9B04D227999F800ED7ADC /* NotesList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesList.swift; sourceTree = "<group>"; };
+		64FEE0592279D79B00A73A94 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +96,7 @@
 			children = (
 				641EE59B2272C09E00C3606B /* MainViewController.swift */,
 				641EE5A12272F15B00C3606B /* CreateNoteViewController.swift */,
+				64FEE0592279D79B00A73A94 /* SettingsViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -201,6 +204,7 @@
 			files = (
 				641EE58A2272266B00C3606B /* AppDelegate.swift in Sources */,
 				64F9B04E227999F800ED7ADC /* NotesList.swift in Sources */,
+				64FEE05A2279D79B00A73A94 /* SettingsViewController.swift in Sources */,
 				641EE59C2272C09E00C3606B /* MainViewController.swift in Sources */,
 				64BDC194227342C300F0A8D5 /* NotesKepper.xcdatamodeld in Sources */,
 				641EE5A22272F15B00C3606B /* CreateNoteViewController.swift in Sources */,
