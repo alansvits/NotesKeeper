@@ -22,10 +22,11 @@ class MainViewController: UITableViewController {
         notesList.numberOfItemsPerPage = 20
         (tableView as! PagingTableView).pagingDelegate = self
 //                        deleteAllRecords()
-                createDummyNotes(with: 40)
-        
-        //SearchBar setup
+                createDummyNotes(with: 1000)
+
+//        self.edgesForExtendedLayout = []
         searchBarSetup()
+
     }
     
     @IBAction func sortBarButtonPressed(_ sender: Any) {
@@ -139,7 +140,7 @@ class MainViewController: UITableViewController {
         searchController.obscuresBackgroundDuringPresentation = false
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
-        searchController.hidesNavigationBarDuringPresentation = false
+        searchController.hidesNavigationBarDuringPresentation = true
         definesPresentationContext = true
     }
     
@@ -190,6 +191,9 @@ class MainViewController: UITableViewController {
             return (note.text?.lowercased().contains(searchText.lowercased()))!
         })
         tableView.reloadData()
+        if notesList.filteredNotes.count != 0 {
+            tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+        }
     }
     
     private func isFiltering() -> Bool {
