@@ -84,15 +84,17 @@ class NotesList {
             note = filteredNotes.remove(at: index)
             managedContext.delete(note)
             notes.removeAll { $0 == note}
+            saveContext()
             return note
         }
         if !isFiltering && lastIndexOfNotes >= index {
             note = notes.remove(at: index)
             managedContext.delete(note)
 //            note = notes[index]
+            saveContext()
             return note
         }
-        saveContext()
+
         return nil
     }
     
