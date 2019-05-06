@@ -109,34 +109,25 @@ class MainViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "NoteItem", for: indexPath) as! NoteTableViewCell
-//        let note: Note
         guard let note = notesList.getNote(at: indexPath, when: isFiltering()) else {
             return cell
         }
-//        if isFiltering() {
-//            note = notesList.filteredNotes[indexPath.row]
-//        } else {
-//            note = notesList.notes[indexPath.row]
-//        }
         cell.configureWith(note)
 
         return cell
     }
     
     override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-//        notesList.selectedNote = getNote(at: indexPath, when: isFiltering())
         notesList.selectedNote = notesList.getNote(at: indexPath, when: isFiltering())
         return indexPath
     }
 
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         let editAction = UITableViewRowAction(style: .normal, title: "Edit") { (rowAction, indexPath) in
-//            self.notesList.selectedNote = self.getNote(at: indexPath, when: self.isFiltering())
             self.notesList.selectedNote = self.notesList.getNote(at: indexPath, when: self.isFiltering())
             self.performSegue(withIdentifier: "EditNoteSegue", sender: tableView)
         }
         let deleteAction = UITableViewRowAction(style: .destructive, title: "Delete") { (rowAction, indexPath) in
-//            self.deleteNote(at: indexPath, when: self.isFiltering())
             self.notesList.deleteNote(at: indexPath, when: self.isFiltering())
             tableView.deleteRows(at: [indexPath], with: .automatic)
         }
@@ -152,30 +143,6 @@ class MainViewController: UITableViewController {
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
         definesPresentationContext = true
-    }
-    
-    private func deleteNote(at indexPath: IndexPath, when filtering: Bool) {
-        if filtering {
-            let note = notesList.filteredNotes[indexPath.row]
-            notesList.managedContext.delete(note)
-            notesList.filteredNotes.remove(at: indexPath.row)
-            notesList.notes.removeAll { $0 == note }
-        } else {
-            let note = notesList.notes[indexPath.row]
-            notesList.managedContext.delete(note)
-            notesList.notes.remove(at: indexPath.row)
-        }
-        notesList.saveContext()
-    }
-    
-    private func getNote(at indexPath: IndexPath, when isFilteting: Bool) -> Note {
-        let note: Note
-        if isFilteting {
-            note = notesList.filteredNotes[indexPath.row]
-        } else {
-            note = notesList.notes[indexPath.row]
-        }
-        return note
     }
     
     //MARK: Searching helper methods
