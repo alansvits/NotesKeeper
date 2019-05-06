@@ -124,7 +124,8 @@ class MainViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-        notesList.selectedNote = getNote(at: indexPath, when: isFiltering())
+//        notesList.selectedNote = getNote(at: indexPath, when: isFiltering())
+        notesList.selectedNote = notesList.getNote(at: indexPath, when: isFiltering())
         return indexPath
     }
 
