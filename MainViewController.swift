@@ -136,7 +136,8 @@ class MainViewController: UITableViewController {
             self.performSegue(withIdentifier: "EditNoteSegue", sender: tableView)
         }
         let deleteAction = UITableViewRowAction(style: .destructive, title: "Delete") { (rowAction, indexPath) in
-            self.deleteNote(at: indexPath, when: self.isFiltering())
+//            self.deleteNote(at: indexPath, when: self.isFiltering())
+            self.notesList.deleteNote(at: indexPath, when: self.isFiltering())
             tableView.deleteRows(at: [indexPath], with: .automatic)
         }
         editAction.backgroundColor = UIColor.green

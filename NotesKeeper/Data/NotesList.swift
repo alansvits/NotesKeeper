@@ -74,4 +74,26 @@ class NotesList {
         return nil
     }
     
+    func deleteNote(at indexPath: IndexPath, when isFiltering: Bool) -> Note? {
+        let note: Note
+        let index = indexPath.row
+        let lastIndexOfNotes = notes.count - 1
+        let lastIndexOfFilteredNotes = filteredNotes.count - 1
+        
+        if isFiltering && lastIndexOfFilteredNotes >= index {
+            note = filteredNotes.remove(at: index)
+            managedContext.delete(note)
+            notes.removeAll { $0 == note}
+            return note
+        }
+        if !isFiltering && lastIndexOfNotes >= index {
+            note = notes.remove(at: index)
+            managedContext.delete(note)
+//            note = notes[index]
+            return note
+        }
+        saveContext()
+        return nil
+    }
+    
 }
