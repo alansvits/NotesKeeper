@@ -23,8 +23,6 @@ class SettingsViewController: UITableViewController {
     var notesList: NotesList!
     weak var delegate: SettingsViewControllerDelegate?
     
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         delayWhilePaginating.delegate = self
@@ -71,7 +69,6 @@ class SettingsViewController: UITableViewController {
     
     private func createDummyNotes(with numberOfItems: Int) {
         for item in 1...numberOfItems {
-            print("notesList item is \(item)")
             saveNote(with: String(item))
         }
     }

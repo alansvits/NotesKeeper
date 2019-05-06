@@ -132,8 +132,6 @@ class CreateNoteViewController: UIViewController {
             case .share:
                 navigationItem.rightBarButtonItem = shareButton
             }
-        } else {
-            print("Mode is \(String(describing: notesList.mode))")
         }
     }
 

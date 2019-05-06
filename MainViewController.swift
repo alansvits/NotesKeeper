@@ -113,7 +113,6 @@ class MainViewController: UITableViewController {
         if isFiltering() {
             note = notesList.filteredNotes[indexPath.row]
         } else {
-            print("notesList.notes.count cellForRowAt is \(notesList.notes.count)")
             note = notesList.notes[indexPath.row]
         }
         cell.configureWith(note)
@@ -143,9 +142,9 @@ class MainViewController: UITableViewController {
     private func searchBarSetup() {
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
+        searchController.hidesNavigationBarDuringPresentation = false
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
-        searchController.hidesNavigationBarDuringPresentation = false
         definesPresentationContext = true
     }
     
