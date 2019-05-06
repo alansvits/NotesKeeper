@@ -1,38 +1,38 @@
 import UIKit
 
-@objc public protocol PagingTableViewDelegate {
+@objc protocol PagingTableViewDelegate {
     
     @objc optional func didPaginate(_ tableView: PagingTableView, to page: Int)
     func paginate(_ tableView: PagingTableView, to page: Int)
     
 }
 
-open class PagingTableView: UITableView {
+class PagingTableView: UITableView {
     
     private var loadingView: UIView!
     private var indicator: UIActivityIndicatorView!
     internal var page: Int = 0
     internal var previousItemCount: Int = 0
     
-    open var currentPage: Int {
+    var currentPage: Int {
         get {
             return page
         }
     }
     
-    open weak var pagingDelegate: PagingTableViewDelegate? {
+    weak var pagingDelegate: PagingTableViewDelegate? {
         didSet {
             pagingDelegate?.paginate(self, to: page)
         }
     }
     
-    open var isLoading: Bool = false {
+    var isLoading: Bool = false {
         didSet {
             isLoading ? showLoading() : hideLoading()
         }
     }
     
-    open func reset() {
+    func reset() {
         page = 0
         previousItemCount = 0
         pagingDelegate?.paginate(self, to: page)
