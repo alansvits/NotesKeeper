@@ -23,5 +23,11 @@ class NoteTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
 
     }
+    
+    func configureWith(_ note: Note) {
+        dateLabel.text = note.dateString
+        timeLabel.text = note.timeString
+        noteLabel.text = note.text
+    }
 
 }

@@ -116,9 +116,7 @@ class MainViewController: UITableViewController {
             print("notesList.notes.count cellForRowAt is \(notesList.notes.count)")
             note = notesList.notes[indexPath.row]
         }
-        cell.noteLabel.text = note.text
-        cell.dateLabel.text = note.dateString
-        cell.timeLabel.text = note.timeString
+        cell.configureWith(note)
 
         return cell
     }
