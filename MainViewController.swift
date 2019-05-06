@@ -131,7 +131,8 @@ class MainViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         let editAction = UITableViewRowAction(style: .normal, title: "Edit") { (rowAction, indexPath) in
-            self.notesList.selectedNote = self.getNote(at: indexPath, when: self.isFiltering())
+//            self.notesList.selectedNote = self.getNote(at: indexPath, when: self.isFiltering())
+            self.notesList.selectedNote = self.notesList.getNote(at: indexPath, when: self.isFiltering())
             self.performSegue(withIdentifier: "EditNoteSegue", sender: tableView)
         }
         let deleteAction = UITableViewRowAction(style: .destructive, title: "Delete") { (rowAction, indexPath) in
