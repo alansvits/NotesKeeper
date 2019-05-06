@@ -58,4 +58,20 @@ class NotesList {
         }
     }
     
+    func getNote(at indexPath: IndexPath, when isFiltering: Bool) -> Note? {
+        let note: Note
+        let index = indexPath.row
+        let lastIndexOfNotes = notes.count - 1
+        let lastIndexOfFilteredNotes = filteredNotes.count - 1
+        if isFiltering && lastIndexOfFilteredNotes >= index {
+            note = filteredNotes[index]
+            return note
+        }
+        if !isFiltering && lastIndexOfNotes >= index {
+            note = notes[index]
+            return note
+        }
+        return nil
+    }
+    
 }

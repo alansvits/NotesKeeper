@@ -109,12 +109,15 @@ class MainViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "NoteItem", for: indexPath) as! NoteTableViewCell
-        let note: Note
-        if isFiltering() {
-            note = notesList.filteredNotes[indexPath.row]
-        } else {
-            note = notesList.notes[indexPath.row]
+//        let note: Note
+        guard let note = notesList.getNote(at: indexPath, when: isFiltering()) else {
+            return cell
         }
+//        if isFiltering() {
+//            note = notesList.filteredNotes[indexPath.row]
+//        } else {
+//            note = notesList.notes[indexPath.row]
+//        }
         cell.configureWith(note)
 
         return cell
