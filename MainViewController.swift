@@ -13,7 +13,6 @@ class MainViewController: UITableViewController {
     
     @IBOutlet weak var sortBarButton: UIBarButtonItem!
     @IBOutlet weak var clickMeBarButton: UIBarButtonItem!
-    var managedContext: NSManagedObjectContext!
     var notesList: NotesList!
     let searchController = UISearchController(searchResultsController: nil)
     
@@ -70,7 +69,7 @@ class MainViewController: UITableViewController {
     
     //MARK: SEGUES
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "DetailNoteSegue" { //Fire wher user tap a row
+        if segue.identifier == "DetailNoteSegue" { //Fire when user tap a row
             let controller = segue.destination as! CreateNoteViewController
             notesList.mode = .share
             controller.notesList = notesList
@@ -150,7 +149,7 @@ class MainViewController: UITableViewController {
     }
     
     private func filterContentForSearchText(_ searchText: String, scope: String = "All") {
-        if !notesList.isUpdated {
+/*        if !notesList.isUpdated {
             var fetchedNotes = [Note]()
             let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Note")
             let sortDescriptor = NSSortDescriptor(key: "date", ascending: false)
@@ -162,7 +161,8 @@ class MainViewController: UITableViewController {
                 print("Could not fetch. \(error), \(error.userInfo)")
             }
             notesList.notes = fetchedNotes
-        }
+        }*/
+        notesList.updateNotes()
         notesList.filteredNotes = (notesList.notes).filter({ (note) -> Bool in
             return (note.text?.lowercased().contains(searchText.lowercased()))!
         })

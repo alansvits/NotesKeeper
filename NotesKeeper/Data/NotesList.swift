@@ -88,6 +88,22 @@ class NotesList {
         return nil
     }
     
+    func updateNotes() {
+        if !self.isUpdated {
+            var fetchedNotes = [Note]()
+            let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Note")
+            let sortDescriptor = NSSortDescriptor(key: "date", ascending: false)
+            fetchRequest.sortDescriptors = [sortDescriptor]
+            self.isUpdated = true
+            do {
+                fetchedNotes = try self.managedContext.fetch(fetchRequest) as! [Note]
+            } catch let error as NSError {
+                print("Could not fetch. \(error), \(error.userInfo)")
+            }
+            self.notes = fetchedNotes
+        }
+    }
+    
     private func isCorrectIndex(_ index: Int, for list: [Note]) -> Bool {
         let lastIndexOfList = list.count - 1
         return lastIndexOfList >= index
