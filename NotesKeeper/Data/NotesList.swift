@@ -12,6 +12,7 @@ import CoreData
 enum Mode {
     case create, edit, share
 }
+
 class NotesList {
     var notes = [Note]()
     var filteredNotes = [Note]()
@@ -59,43 +60,37 @@ class NotesList {
     }
     
     func getNote(at indexPath: IndexPath, when isFiltering: Bool) -> Note? {
-        let note: Note
         let index = indexPath.row
-        let lastIndexOfNotes = notes.count - 1
-        let lastIndexOfFilteredNotes = filteredNotes.count - 1
-        if isFiltering && lastIndexOfFilteredNotes >= index {
-            note = filteredNotes[index]
-            return note
+        if isFiltering && isCorrectIndex(index, for: filteredNotes) {
+            return filteredNotes[index]
         }
-        if !isFiltering && lastIndexOfNotes >= index {
-            note = notes[index]
-            return note
+        if !isFiltering && isCorrectIndex(index, for: notes) {
+            return notes[index]
         }
         return nil
     }
     
     func deleteNote(at indexPath: IndexPath, when isFiltering: Bool) -> Note? {
-        let note: Note
         let index = indexPath.row
-        let lastIndexOfNotes = notes.count - 1
-        let lastIndexOfFilteredNotes = filteredNotes.count - 1
-        
-        if isFiltering && lastIndexOfFilteredNotes >= index {
-            note = filteredNotes.remove(at: index)
+        if isFiltering && isCorrectIndex(index, for: filteredNotes) {
+            let note = filteredNotes.remove(at: index)
             managedContext.delete(note)
             notes.removeAll { $0 == note}
             saveContext()
             return note
         }
-        if !isFiltering && lastIndexOfNotes >= index {
-            note = notes.remove(at: index)
+        if !isFiltering && isCorrectIndex(index, for: notes) {
+            let note = notes.remove(at: index)
             managedContext.delete(note)
-//            note = notes[index]
             saveContext()
             return note
         }
-
         return nil
+    }
+    
+    private func isCorrectIndex(_ index: Int, for list: [Note]) -> Bool {
+        let lastIndexOfList = list.count - 1
+        return lastIndexOfList >= index
     }
     
 }

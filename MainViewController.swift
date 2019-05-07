@@ -20,7 +20,6 @@ class MainViewController: UITableViewController {
     //MARK: - Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         (tableView as! PagingTableView).pagingDelegate = self
         searchBarSetup()
     }
