@@ -149,19 +149,6 @@ class MainViewController: UITableViewController {
     }
     
     private func filterContentForSearchText(_ searchText: String, scope: String = "All") {
-/*        if !notesList.isUpdated {
-            var fetchedNotes = [Note]()
-            let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Note")
-            let sortDescriptor = NSSortDescriptor(key: "date", ascending: false)
-            fetchRequest.sortDescriptors = [sortDescriptor]
-            notesList.isUpdated = true
-            do {
-                fetchedNotes = try notesList.managedContext.fetch(fetchRequest) as! [Note]
-            } catch let error as NSError {
-                print("Could not fetch. \(error), \(error.userInfo)")
-            }
-            notesList.notes = fetchedNotes
-        }*/
         notesList.updateNotes()
         notesList.filteredNotes = (notesList.notes).filter({ (note) -> Bool in
             return (note.text?.lowercased().contains(searchText.lowercased()))!
